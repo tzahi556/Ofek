@@ -1,0 +1,371 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage_MasterPage" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- Viewport metatags -->
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- iOS webapp metatags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <!-- iOS webapp icons -->
+    <link rel="apple-touch-icon-precomposed" href="../assets/images/ios/fickle-logo-72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/images/ios/fickle-logo-72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/images/ios/fickle-logo-114.png" />
+    <!-- TODO: Add a favicon -->
+    <link rel="shortcut icon" href="../assets/images/ico/fab.ico">
+    <title>אופק</title>
+    <!--Page loading plugin Start -->
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/pace-rtl.css">
+    <script src="../assets/js/pace.min.js"></script>
+    <!--Page loading plugin End   -->
+    <!-- Plugin Css Put Here -->
+    <link href="../assets/timeline/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/timeline/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/rtl-css/plugins/amaranjs/jquery.amaran-rtl.css" rel="stylesheet">
+    <link href="../assets/css/rtl-css/plugins/amaranjs/theme/all-themes-rtl.css" rel="stylesheet">
+    <script type="text/javascript" src="../assets/js/lib/jquery-1.11.min.js"></script>
+
+    <script src="../assets/js/Generic.js" type="text/javascript" charset="Windows-1255"></script>
+    <script src="../assets/js/bootstrap-multiselect.js"></script>
+
+
+
+    <link rel="stylesheet" href="../assets/css/bootstrap-rtl.css">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/jquery.toolbars-rtl.css">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/jquery.remodal-rtl.css">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/tab-rtl.css">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/accordion-rtl.css">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/bootstrap-progressbar-3.1.1-rtl.css">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/jquery.datetimepicker-rtl.css" />
+    
+    <link href="../assets/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <!-- Plugin Css End -->
+    <!-- Custom styles Style -->
+    <link href="../assets/css/rtl-css/style-rtl.css" rel="stylesheet">
+    <!-- Custom styles Style End-->
+    <!-- Responsive Style For-->
+    <link href="../assets/css/rtl-css/responsive-rtl.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/validationEngine.jquery-rtl.css">
+    <link rel="stylesheet" href="../assets/css/rtl-css/plugins/bootstrapValidator-rtl.css">
+    <!--validationEngine Library Script Start-->
+    <!--Masked Library Script Start-->
+    <script src="../assets/js/jquery.autosize.js"></script>
+    <script src="../assets/js/validationEngine/languages/jquery.validationEngine-he.js"></script>
+    <script src="../assets/js/validationEngine/jquery.validationEngine.js"></script>
+    <!--validationEngine Library Script End-->
+    <!--bootstrap validation Library Script Start-->
+    <script src="../assets/js/bootstrapvalidator/bootstrapValidator.js"></script>
+    <!-- Responsive Style For-->
+    <!-- Custom styles for this template -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  
+
+    <script type="text/javascript">
+
+
+        var UserId = "<%=UserId%>";
+        var RoleId = "<%=RoleId%>";
+        var UserName = "<%=UserName%>";
+
+        var ConfigurationId = "<%=ConfigurationId%>";
+        var HebDate = "<%=HebDate%>";
+        var Name = "<%=Name%>";
+
+        var SchoolId = "<%=SchoolId%>";
+
+        
+
+        $(document).ready(function () {
+
+           
+            if (!UserId)
+                location.href = '../Login.aspx';
+
+            if (RoleId == "2") $(".liAdmin").hide();
+
+            $("#spUserName").text(UserName);
+            $("#dvCurrentSchoolName").html(Name);
+        
+           
+
+            var href = $(location).attr('href');
+           
+
+            //   $('a').removeClass("active");
+
+            
+
+          //  var locName = ".." + location.pathname.replace("Sganit", "").substring(1);
+            //$(".liAdmin").addClass("active");
+            $("body").show();
+
+            
+
+        });
+
+
+
+        function OpenAssignment(Obj) {
+            var ObjId = $(Obj).attr("id");
+            var OrgUnitCode = ObjId.replace("btnArea_", "");
+            var OrgUnitName = $(Obj).html();
+
+
+            setCookie("OrgUnitCode", OrgUnitCode, 2147483647);
+            setCookie("OrgUnitName", $.trim(OrgUnitName), 2147483647);
+
+
+            location.href = '../Assign/Assignment.aspx';
+
+        }
+
+
+        function ExistSystem() {
+            location.href = '../Login.aspx';
+        }
+
+
+        function OpenMessage(Message, Yes, No) {
+
+
+            if (!No) {
+                $("#spNoText").parent().hide();
+            }
+
+
+            $("#spNoText").text(No);
+
+            $("#spYesT").text(Yes);
+
+            $("#spMessage").text(Message);
+            $("#ModalAlert").modal();
+
+        }
+
+
+
+
+    </script>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body style="display: none">
+    <%--<form id="form1" runat="server">--%>
+    <div>
+        <!--Navigation Top Bar Start-->
+        <nav class="navigation">
+            <div class="container-fluid">
+                <!--Logo text start-->
+                <div class="header-logo">
+                    &nbsp;
+                </div>
+                <!--Logo text End-->
+                <div class="top-navigation">
+                    <div class="menu-control hidden-xs">
+                        <a  href="javascript:void(0)"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <%-- <span style="font-weight: bold;">אופק </span>
+                    <div style="">
+                        שלום, 
+                    </div>
+
+                     <div id="dvCurrentSchoolName" >
+                </div>--%>
+                    <ul style="float: right; margin: 5px">
+                        <li>שלום, &nbsp;<span id="spUserName" style="font-weight: bold;"></span>
+
+                        </li>
+                        <li>-   <span id="dvCurrentSchoolName" style="font-weight: bold;"></span>
+                        </li>
+
+
+                    </ul>
+
+
+
+                    <ul id="ulCommand" style="float: left; margin-top: 5px; margin-right: 7px">
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!--Navigation Top Bar End-->
+        <section id="main-container">
+            <!--Left navigation section start-->
+            <section id="left-navigation">
+                <!--Left navigation user details start-->
+                <div class="user-image" style="">
+                    <img src="../assets/images/logo2.png" alt="" />
+                    <div class="user-online-status">
+                        <span class="user-status is-online"></span>
+                    </div>
+                </div>
+                <ul class="social-icon">
+                    <li><a href="javascript:void(0)"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-github"></i></a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-bitbucket"></i></a></li>
+                </ul>
+                <!--Left navigation user details end-->
+                <!--Phone Navigation Menu icon start-->
+                <div class="phone-nav-box visible-xs">
+                    <a class="phone-logo" href="#" title="">
+                        <h1></h1>
+                    </a><a class="phone-nav-control" href="javascript:void(0)"><span class="fa fa-bars"></span></a>
+                    <div class="clearfix">
+                    </div>
+                </div>
+                <!--Phone Navigation Menu icon start-->
+                <!--Left navigation start-->
+                <ul class="mainNav">
+               
+                     <li class="liAdmin"><a href="../ControlAdmin/School.aspx"><i class="glyphicon glyphicon-tasks"></i><span>ניהול בתי ספר</span></a></li>
+                     <li class="liAdmin"><a href="../ControlAdmin/Bakar.aspx"><i class="fa fa-dashboard"></i><span>בקרים ונקודות</span></a></li>
+                     <li class="liAdmin"><a href="../ControlAdmin/Users.aspx"><i class="glyphicon glyphicon-user"></i><span>משתמשים והרשאות</span></a></li>
+                     <li><a href="../Control/Dashboard.aspx"><i class="fa fa-bar-chart-o"></i><span>פאנל ארגון חשמל</span></a></li>
+                     <li onclick="ExistSystem()"><a href="#"><i class="fa fa-power-off"></i><span>יציאה מהמערכת</span> </a></li>
+                       
+                </ul>
+
+               
+                <!--Left navigation end-->
+            </section>
+            <!--Left navigation section end-->
+            <!--Page main section start-->
+            <section id="min-wrapper">
+                <div id="main-content" style="padding: 0px; margin: 0px;">
+                    <div class="container-fluid" style="padding: 0px; margin: 0px">
+                        <!-- Main Content Element  Start-->
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        </asp:ContentPlaceHolder>
+                        <!-- Main Content Element  End-->
+                    </div>
+                </div>
+            </section>
+        </section>
+
+
+        <%-- חלון מודלי של אזהרות לשיבוץ--%>
+      
+          <div class="modal fade" id="ModalAlert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header label-info">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;</button>
+                        <h4 class="modal-title">
+                            <span>הודעת מערכת</span>
+                        </h4>
+                    </div>
+                    <div class="modal-body" id="Div2">
+                        <div class="col-md-12">
+                            <div style="font-size: 24px; text-align: right" id="Div5">
+                                <h3>
+                                    <span id="spMessage"></span>
+                                </h3>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-6" style="text-align: left">
+                            <div class="btn ls-red-btn btn-round" data-dismiss="modal" onclick="CallBackFromYesNo(0)">
+                                <i class="glyphicon glyphicon-remove-sign"></i>&nbsp; <span id="spNoText">לגגגג א</span>
+                            </div>
+                            <div class="btn btn-info btn-round" data-dismiss="modal" onclick="CallBackFromYesNo(1)">
+                                <i class="glyphicon glyphicon-edit"></i>&nbsp; <span id="spYesT">אישור</span>
+                            </div>
+                        </div>
+                        <div class="clear">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <%--  <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-xs" data-dismiss="modal">
+                        סגור</button>
+                </div>--%>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!--Layout Script start -->
+    <script type="text/javascript" src="../assets/js/color.js"></script>
+    <script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../assets/js/multipleAccordion.js"></script>
+    <!--easing Library Script Start -->
+    <script src="../assets/js/lib/jquery.easing.js"></script>
+    <!--easing Library Script End -->
+    <!--Nano Scroll Script Start -->
+    <script src="../assets/js/jquery.nanoscroller.min.js"></script>
+    <!--Nano Scroll Script End -->
+    <!--switchery Script Start -->
+    <script src="../assets/js/switchery.min.js"></script>
+    <!--switchery Script End -->
+    <!--bootstrap switch Button Script Start-->
+    <script src="../assets/js/bootstrap-switch.js"></script>
+    <!--bootstrap switch Button Script End-->
+    <!--easypie Library Script Start -->
+    <script src="../assets/js/jquery.easypiechart.min.js"></script>
+    <!--easypie Library Script Start -->
+    <!--bootstrap-progressbar Library script Start-->
+    <script src="../assets/js/bootstrap-progressbar.min.js"></script>
+    <!--bootstrap-progressbar Library script End-->
+    <script type="text/javascript" src="../assets/js/pages/layout.js"></script>
+    <!--Layout Script End -->
+    <!--Rating Library Script Start -->
+    <script src="../assets/js/bootstrap-rating-input.min.js"></script>
+    <!--Rating Library Script End -->
+    <!--Tooltip Bar Library Script Start -->
+    <script src="../assets/js/jquery.toolbar.min.js"></script>
+    <!--Tooltip Bar Library Script End -->
+    <!--Notify notification Library Script Start -->
+    <script src="../assets/js/notify.min.js"></script>
+    <!--Notify notification Library Script End -->
+    <!--Tab Library Script Start -->
+    <script src="../assets/js/tabulous.js"></script>
+    <!--Tab Library Script End -->
+    <!--Qrcode Library Script Start -->
+    <script src="../assets/js/jquery.qrcode.js"></script>
+    <script src="../assets/js/qrcode.js"></script>
+    <!--Qrcode Library Script End -->
+    <!-- Remodal Js Start-->
+    <script src="../assets/js/jquery.remodal.min.js"></script>
+    <!-- Remodal Js Finished-->
+    <script src="../assets/js/bootbox.min.js"></script>
+    <!--Demo ui element Script Start -->
+    <%--  <script src="../assets/js/pages/uiElements.js"></script>--%>
+    <!--Demo ui element Script End -->
+    <!-- MiniColors Library Script Start -->
+    <script src="../assets/js/jquery.datetimepicker.js"></script>
+    <script src="../assets/js/pages/pickerTool.js"></script>
+    <!-- MiniColors Library Script Start -->
+    <script src="../assets/js/jquery.minicolors.min.js"></script>
+    <!--BootBox script for calender start-->
+    <!--BootBox script for calender End-->
+ 
+    <script src="../assets/js/jquery.maskedinput.min.js"></script>
+    <script src="../assets/js/jquery.amaran.js"></script>
+    <%--<script src="../assets/js/jquery.autosize.js"></script>
+    <script src="../assets/js/validationEngine/languages/jquery.validationEngine-he.js"></script>
+    <script src="../assets/js/validationEngine/jquery.validationEngine.js"></script>
+    <script src="../assets/js/bootstrapvalidator/bootstrapValidator.js"></script>--%>
+    <%--    <script src="../assets/js/pages/formValidation.js"></script>
+   </form> --%>
+</body>
+</html>

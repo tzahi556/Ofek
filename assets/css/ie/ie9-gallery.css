@@ -1,0 +1,244 @@
+/*------------------------------------------------------------------
+[Master IE Stylesheet]
+
+Project     :	Fickle Responsive Admin Template
+Version     :	1.0
+Author      : 	AimMateTeam
+URL         :   http://aimmate.com
+Support     :   aimmateteam@gmail.com
+Primary use :	Dashboard
+
+-------------------------------------------------------------------*/
+
+#grid .col-md-3,
+#grid .col-md-4,
+#grid .col-md-6,
+#grid .col-sm-6,
+#grid .col-sm-3,
+#grid .col-sm-4,
+#grid .col-sm-6,
+#grid .col-sm-12,
+#grid .col-xs-12{
+    padding: 0;
+    margin: 0;
+}
+
+.m-row [class*="m-col-md"] {
+    float: left;
+    margin-left: 2% !important;
+}
+.m-row [class*="m-col-md"]:first-child {
+    margin-left: 0;
+}
+
+.m-row .m-col-md-3 {
+    width: 22.7777%;
+}
+.m-row .m-col-md-4 {
+    width: 32%;
+}
+
+.m-row .m-col-md-6 {
+    width: 49%;
+}
+
+.picture-item {
+    position: relative;
+    margin-top: 20px !important;
+}
+
+.picture-item img{
+    max-width: 100%;
+}
+
+.picture-item.shuffle-item {
+    margin-left: 0;
+    /* shuffle items shouldn't have a left margin*/
+}
+
+.picture-item.m-col-md-4:not(.picture-item--h2) .picture-item__details {
+    width: 100%;
+    background-color: #1fb5ad;
+    color: white;
+}
+
+.picture-item.m-col-md-4:not(.picture-item--h2) .picture-item__description {
+    display: none;
+}
+
+.picture-item .picture-item__inner {
+    height: 100%;
+    overflow: hidden;
+    -moz-box-shadow: 0px 3px 3px #B5B2B2;
+    -webkit-box-shadow: 0px 3px 3px #B5B2B2;
+    box-shadow: 0px 3px 3px #B5B2B2;
+}
+
+.picture-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.picture-item .picture-item__details,
+.picture-item .picture-item__description {
+    padding: 10px;
+}
+
+.picture-item .picture-item__description {
+    margin: 0;
+    padding-top: 0;
+    padding-right: 2em;
+}
+
+.picture-item .picture-item__tags {
+    margin: 0;
+    text-transform: uppercase;
+}
+
+/*
+  Shuffle needs either relative or absolute positioning on the container
+  It will set it for you, but it'll cause another style recalculation and layout.
+  AKA worse performance - so just set it here
+ */
+.shuffle--container {
+    position: relative;
+    overflow: hidden;
+}
+
+.shuffle--fluid .shuffle__sizer {
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Animate in styles */
+.shuffle--animatein {
+    overflow: visible;
+}
+
+.shuffle--animatein .picture-item__inner {
+    opacity: 0;
+    -webkit-transform: translate(0, 220px);
+    -ms-transform: translate(0, 220px);
+    transform: translate(0, 220px);
+}
+
+.shuffle--animatein .picture-item__inner--transition {
+    -webkit-transition: all .6s ease;
+    transition: all .6s ease;
+}
+
+.shuffle--animatein .picture-item.in .picture-item__inner {
+    opacity: 1;
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+/*******************************************/
+.ls-gallery-filter-wrap {
+    margin: 10px 0;
+}
+
+.ls-gallery-search {
+    text-align: right;
+}
+
+.ls-gallery-search input {
+    border-radius: 0;
+    height: 35px;
+    padding-left: 5px;
+    border: 1px solid #DEDEDE;
+}
+
+.ls-gallery-search input:focus,
+.ls-gallery-search select {
+    border: 1px solid #FF7878;
+}
+
+.ls-gallery-search select {
+    border-radius: 0;
+    border: 1px solid #DEDEDE;
+    height: 35px;
+    background: #ffffff;
+    display: inline-block;
+    padding: 3px 3px 3px 5px;
+}
+
+.ls-gallery-search select > option {
+    border-bottom: 1px solid #DEDEDE;
+    height: 35px;
+    padding: 6px 3px 3px 5px;
+    background: #FFFFFF;
+}
+
+.ls-gallery-search select option:hover {
+    color: #FFFFFF;
+    background-color: #FF7878;
+    cursor: pointer;
+}
+
+.picture-item__title a {
+    color: #585353;
+}
+
+.picture-item.m-col-md-3 .picture-item__details {
+    font-size: 12px;
+}
+
+.picture-item.m-col-md-6:not(.picture-item--h2) .picture-item__details {
+    width: 100%;
+    background-color: #e8b690;
+    color: white;
+}
+
+.picture-item.m-col-md-3:not(.picture-item--h2) .picture-item__details {
+    width: 100%;
+    background-color: #aaaa9e;
+    color: white;
+}
+
+/**************************************************/
+@media (max-width: 47.9375em) {
+    .picture-item {
+        height: auto;
+        margin-top: 15px;
+    }
+
+    .picture-item.picture-item--h2 {
+        height: auto;
+    }
+
+    .picture-item .picture-item__details,
+    .picture-item .picture-item__description {
+        font-size: .875em;
+        padding: .625em;
+    }
+
+    .picture-item .picture-item__description {
+        padding-right: .875em;
+        padding-bottom: 1.25em;
+    }
+
+    .filter > .row,
+    .filter > .row > div {
+        margin: 10px 0;
+    }
+
+    .m-nofloat {
+        float: none;
+    }
+}
+
+#grid .ls-block-effect .ls-blind{
+    background-color: rgba(255,255,255,0.1) ;
+}
+
+#grid .ls-block-effect:hover .ls-blind {
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+}
+
+
+

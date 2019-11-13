@@ -1,0 +1,63 @@
+﻿{
+  "1": {
+    "success": true,
+    "params": {
+      "id": "5898d69eb2157c5312b22dbb",
+      "orgId": "583d1a727094413ace12e204",
+      "name": "Dig_226",
+      "key": "dig_226",
+      "defId": "5868cd627094417eaa995f3a",
+      "defName": "ברז מים",
+      "tags": [ "7" ],
+      "lastSeen": "2017-02-15T06:41:39.807Z",
+      "lastCommunication": "2017-02-15T06:41:39.807Z",
+      "tunnelActualHost": "127.0.0.1",
+      "tunnelVirtualHost": "127.0.0.1",
+      "attrs": {
+        "parameters": {
+          "ts": "2017-02-15T06:41:39.789Z",
+          "since": "2017-02-12T19:10:13.761Z",
+          "value": "Dig ON ID:226 TS:00:00 24:00 TR:D WM:2 In:1 CNT:3 TIMEP:D TBA:90s TBEV:10s TL:1 BV:3.6V"
+        }
+      },
+      "properties": {
+        "battery": {
+          "ts": "2017-02-15T06:41:39.798Z",
+          "value": 81
+        },
+        "counter": {
+          "ts": "2017-02-12T09:53:18.885Z",
+          "value": 1
+        },
+        "rssi": {
+          "ts": "2017-02-15T06:41:39.803Z",
+          "value": 213
+        },
+        "status": {
+          "ts": "2017-02-13T14:29:47.442Z",
+          "value": 0
+        }
+      },
+      "alarms": {
+        "alarm": {
+          "ts": "2017-02-13T14:29:47.431Z",
+          "since": "2017-02-13T14:29:47.431Z",
+          "state": 0
+        }
+      },
+      "apiCounts": {
+        "daily": 0,
+        "monthToDate": 0,
+        "total": 0
+      },
+      "storage": 273410,
+      "createdBy": "899720203753622046",
+      "createdOn": "2017-02-06T20:03:42.229Z",
+      "updatedBy": "899720203753622046",
+      "updatedOn": "2017-02-06T20:03:42.229Z",
+      "defKey": "uconnect_digital",
+      "connected": false,
+      "appId": false
+    }
+  }
+}
