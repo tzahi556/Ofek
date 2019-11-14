@@ -7,7 +7,7 @@
     <script type="text/javascript">
 
         var mydata;
-        var UCommandId = "";
+        var UCommandId = ""; 
         var UConnectIdSelected = "";
         var Status = 1;
 
