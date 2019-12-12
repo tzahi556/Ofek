@@ -12,7 +12,7 @@
         $(document).ready(function () {
 
             FillData();
-
+            
 
             $(".modal").draggable({
                 handle: ".modal-header"
