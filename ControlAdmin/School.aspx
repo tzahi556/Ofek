@@ -16,6 +16,7 @@
 
             $(".modal").draggable({
                 handle: ".modal-header"
+
             });
 
             $("div[id^='dvSchool']").removeClass("schoolSelected");
