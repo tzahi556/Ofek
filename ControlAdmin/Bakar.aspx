@@ -63,11 +63,11 @@
 
             mydata = Ajax("Gen_GetTable", "TableName=UCommand&Condition=Active=1 and SchoolId=" + SchoolId);
 
-
-
+           
+            
             for (var i = 0; i < mydata.length; i++) {
 
-               if(i==0) FirstCommandId = mydata[i].UCommandId;
+                if(i==0) FirstCommandId = mydata[i].UCommandId;
                 var UCommandTemplate = $("#dvUCommandTemplate").html();
                 UCommandTemplate = UCommandTemplate.replace(/@UCommandName/g, mydata[i].UCommandName.replace(/["']/g, "''")).replace(/@UCommandId/g, mydata[i].UCommandId);
                 UCommandTemplate = UCommandTemplate.replace(/@UCommIP/g, mydata[i].UCommIP);
@@ -177,6 +177,11 @@
                 FillCategoryData();
             }
 
+            if (Type == 1 && DeleteType == "4") {
+                Ajax("Admin_UCommandRegister", "UCommandId=" + SelectedUCommandId + "&Startrigster=&Jump=&Type=2");
+                FillCategoryData();
+            }
+
         }
 
         function SetOnlineOffline() {
@@ -249,20 +254,23 @@
                     ConnectTemplate = ConnectTemplate.replace(/@UConnectThingKey/g, mydata[i].UConnThingKey);
                     ConnectTemplate = ConnectTemplate.replace(/@Seq/g, mydata[i].UConnSeq);
                     ConnectTemplate = ConnectTemplate.replace(/@UStartRigster/g, mydata[i].UStartRigster);
+                    ConnectTemplate = ConnectTemplate.replace(/@UTempRigester/g, mydata[i].UTempRigester);
                     ConnectTemplate = ConnectTemplate.replace(/@UConnType/g, mydata[i].UConnType);
-                    ConnectTemplate = ConnectTemplate.replace(/@btntype/g, ((mydata[i].UConnType == "1" || mydata[i].UConnType == "4") ? "btn-primary" : "btn-info"));
+                   // ConnectTemplate = ConnectTemplate.replace(/@btntype/g, ((mydata[i].UConnType == "1" || mydata[i].UConnType == "4") ? "btn-primary" : "btn-info"));
                     ConnectTemplate = ConnectTemplate.replace(/@URlyConnectId/g, mydata[i].URlyConnectId);
+                    ConnectTemplate = ConnectTemplate.replace(/@Utemp/g, "0");
+                   
+                    //var ImageValid = "Valid.gif";
 
+                    //if (mydata[i].Value == "")
+                    //    ImageValid = "error.png";
 
-                    var ImageValid = "Valid.gif";
-
-                    if (mydata[i].Value == "")
-                        ImageValid = "error.png";
-
-                    ConnectTemplate = ConnectTemplate.replace(/@Image/g, ImageValid);
+                    //ConnectTemplate = ConnectTemplate.replace(/@Image/g, ImageValid);
 
 
                     if (mydata[i].UConnectId) $("#dvCategoryConainer_" + UCategoryId).append(ConnectTemplate);
+                    if (mydata[i].UConnType == 1) $("#" + mydata[i].UConnectId + "_tempId").hide();
+                    else $("#" + mydata[i].UConnectId + "_tempId").show();
 
                 }
             }
@@ -327,9 +335,14 @@
 
         //********************* Connect *************************
 
-        function OpenConnect(UCategoryId, UConnectId, UConnectName, UEndRigster, UConnectThingKey, Seq, UStartRigster, UConnType, URlyConnectId) {
+        function OpenConnect(UCategoryId, UConnectId, UConnectName, UEndRigster, UConnectThingKey, Seq, UStartRigster, UConnType, URlyConnectId, UTempRigester) {
 
-            ClearInputAlert("txtUConnectName", "txtUStartRigster", "txtUEndRigster", "txtUConnectSeq");
+            ClearInputAlert("txtUConnectName", "txtUStartRigster", "txtUEndRigster", "txtUConnectSeq", "txtUTempRigester");
+
+            if (UConnType == 1 || !UConnType) $("#dvTempSection").hide();
+            else $("#dvTempSection").show();
+
+
 
             SelectedUCategoryId = UCategoryId;
             SelectedUConnectId = UConnectId;
@@ -338,7 +351,7 @@
                 $("#spModalConnect").text(UConnectName);
                 $("#txtUConnectName").val(isEmpty(UConnectName));
                 $("#txtUEndRigster").val(isEmpty(UEndRigster));
-                // $("#txtUConnectThingKey").val(isEmpty(UConnectThingKey));
+                $("#txtUTempRigester").val(isEmpty(UTempRigester));
                 $("#txtUConnectSeq").val(isEmpty(Seq));
 
                 $("#txtUStartRigster").val(isEmpty(UStartRigster));
@@ -349,14 +362,19 @@
 
             } else {
 
+
+                var resData = Ajax("Admin_GetUConnectStartEndRegister", "UCommandId=" + SelectedUCommandId);
+                
                 $("#spModalConnect").text("יחידה חדשה");
                 $("#txtUConnectName").val("");
-                $("#txtUEndRigster").val("");
-                // $("#txtUConnectThingKey").val("");
+             
+                $("#txtUTempRigester").val("");
                 $("#txtUConnectSeq").val("");
-                $("#txtUStartRigster").val("");
+                $("#txtUStartRigster").val(resData[0].StartReg);
+                $("#txtUEndRigster").val(resData[0].EndReg);
                 $("#ddlUConnMode").val("1");
                 $("#ddlUTemps").val("");
+                
 
             }
 
@@ -376,17 +394,23 @@
 
         function SaveDataConnect() {
 
-            ClearInputAlert("txtUConnectName", "txtUStartRigster", "txtUEndRigster", "txtUConnectSeq");
+            ClearInputAlert("txtUConnectName", "txtUStartRigster", "txtUEndRigster", "txtUConnectSeq", "txtUTempRigester");
 
             var UConnectName = $("#txtUConnectName").val();
             var UStartRigster = $("#txtUStartRigster").val();
             var UEndRigster = $("#txtUEndRigster").val();
+            var UTempRigester = $("#txtUTempRigester").val();
+                                     
             var UConnType = $("#ddlUConnMode").val();
             var UConnectSeq = $("#txtUConnectSeq").val();
+
+            
             if (!UConnectSeq) UConnectSeq = "0";
            
+            var temp = (UConnType == 1) ? "" : "txtUTempRigester";
 
-            var res =  CheckValid("txtUConnectName", "txtUStartRigster", "txtUEndRigster", "txtUConnectSeq");
+            var res = CheckValid("txtUConnectName", "txtUStartRigster", "txtUEndRigster", "txtUConnectSeq", temp);
+          
             if (!res) return;
 
             var resData = Ajax("Admin_SetUConnect", "UConnectId=" + SelectedUConnectId + "&UCategoryId=" + SelectedUCategoryId
@@ -394,6 +418,8 @@
                    + "&UConnectName=" + UConnectName + "&UConnectSeq=" + UConnectSeq + "&UStartRigster=" + UStartRigster
                    + "&UConnType=" + UConnType 
                    + "&UCommIP=" + SelectedUCommIP
+                   + "&UTempRigester=" + UTempRigester
+                   
                    );
 
 
@@ -411,10 +437,43 @@
 
         }
 
+        function CreateBakarRigster(Type) {
+            if (Type == 2) {
+                DeleteType = "4";
+                OpenMessage("האם אתה בטוח שברצונך למחוק את כל הריגסטרים של הבקר?", "כן", "לא");
+
+            } else {
+
+                var Startrigster = $("#txtStartrigster").val();
+                var Jump = $("#txtJump").val();
+
+
+                if (!Startrigster || !Jump) {
+
+                    alert("בכדי ליצור ריגסטרים השדות הם חובה");
+                    return;
+
+                }
+
+                var res = Ajax("Admin_UCommandRegister", "UCommandId=" + SelectedUCommandId + "&Startrigster=" + Startrigster + "&Jump=" + Jump + "&Type=1");
+                alert("יצירת כל הרגיסטרים של הבקר בוצעו בהצלחה");
+
+                //  FillCategoryData();
+
+
+
+
+            }
+
+        }
+        
+
 
         function CheckValid() {
             var res = true;
             for (i = 0; i < arguments.length; i++) {
+               
+                if (!arguments[i]) continue;
                 var valueOfArg =  $("#" + arguments[i]).val();
                 if (!valueOfArg) {
                     $("#" + arguments[i]).addClass("inputAlertRed");
@@ -433,6 +492,19 @@
 
         }
 
+
+        function ConnectChange() {
+            var UConnType = $("#ddlUConnMode").val();
+            if (UConnType == 1) {
+                $("#dvTempSection").hide();
+                $("#txtUTempRigester").val("");
+            }
+            else $("#dvTempSection").show();
+            
+
+
+        }
+
     </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -442,7 +514,7 @@
         
          <div class="row dvSection">
             <div class="panel panel-info"  data-toggle="collapse" data-target="#dvPanelBakar">
-                <div class="panel-heading " >
+                <div class="panel-heading ">
                     <div class="panel-title">
                         &nbsp;רשימת בקרים 
                    
@@ -457,7 +529,7 @@
 
 
                 </div>
-                <div class="panel-body collapse" id="dvPanelBakar">
+                <div class="panel-body" id="dvPanelBakar">
                    <%-- <div class="col-md-12">
                         לחיצה אחת על 
                           <b>"בקר"</b>
@@ -514,16 +586,49 @@
                         <div class="col-md-9 input-group ls-group-input">
                             <input type="text" id="txtUCommPORT" class="form-control">
                         </div>
-
-
-
-
-                   
-                        <div class="col-md-12" style="text-align: left">
+                             <div class="col-md-12" style="text-align: left">
                             <button type="button" class="btn btn-info btn-round" onclick="SaveDataBakar()">
                                 <i class="glyphicon glyphicon-edit"></i>&nbsp; <span>עדכן</span>
                             </button>
                         </div>
+          <%--               <div class="col-md-12" style="text-align: left">
+                               <hr />
+                             </div>
+                      
+                         <div class="col-md-3">
+                            <span class="help-block m-b-none">ריגסטר התחלה</span>
+                        </div>
+
+                        <div class="col-md-3 ">
+                            <input type="number" id="txtStartrigster" class="form-control">
+                        </div>
+                         <div class="col-md-3">
+                            <span class="help-block m-b-none">בקפיצות </span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <input type="number" id="txtJump" class="form-control">
+                        </div>
+                         <div class="col-md-12"><br /></div>
+                        <div class="col-md-6" style="">
+                            </div>
+                         <div class="col-md-3" style="">
+                            <button type="button" class="btn btn-primary btn-round" onclick="CreateBakarRigster(1)">
+                                <i class="glyphicon glyphicon-edit"></i>&nbsp; <span>צור ריסטרים </span>
+                            </button>
+                        </div>
+
+                        <div class="col-md-3" style="">
+                         <div class="btn  btn-danger btn-round" onclick='CreateBakarRigster(2)'> מחק ריגסטרים</div>
+                        </div>
+
+                      <div class="col-md-12" style="text-align: left">
+                               <hr />
+                             </div>--%>
+
+
+                   
+                   
 
                          <div class="col-md-12 dvAlertRed " >
                              השדות המסומנים הינם שדות חובה!
@@ -616,7 +721,7 @@
                         </div>
 
                         <div class="col-md-9" style="padding: 0px; margin: 0px;">
-                            <select id="ddlUConnMode" class="form-control">
+                            <select id="ddlUConnMode" class="form-control" onchange="ConnectChange()">
                                 <option value="1">מתח</option>
                                 <option value="2">מתח + טמפרטורה</option>
                               <%--  <option value="3">טמפרטורה</option>
@@ -634,7 +739,15 @@
                         <div class="col-md-9 input-group ls-group-input ">
                             <input type="text" id="txtUConnectName" class="form-control">
                         </div>
+                        <div id="dvTempSection">
+                        <div class="col-md-3">
+                            <span class="help-block m-b-none"> ריגסטר טמפ': </span>
+                        </div>
 
+                        <div class="col-md-9 input-group ls-group-input">
+                            <input type="number" id="txtUTempRigester" class="form-control">
+                        </div>
+                        </div>
                         <div class="col-md-3">
                             <span class="help-block m-b-none">התחלת ריגסטר: </span>
                         </div>
@@ -718,7 +831,7 @@
                                  <i class='glyphicon glyphicon-plus-sign'></i> הוסף קטגוריה </div>
                          </div>--%>
                         <div class="btnMargin">
-                            <div class="btn btn-primary btn-round btn-xs" onclick='OpenConnect(@UCategoryId,"0","","","","","","","0")'>
+                            <div class="btn btn-primary btn-round btn-xs" onclick='OpenConnect(@UCategoryId,"0","","","","","","","0","")'>
                                 <i class='glyphicon glyphicon-plus-sign'></i>
                                 הוסף יחידה
                             </div>
@@ -752,11 +865,14 @@
 
     <div id="dvConnectTemplate" style="display: none">
         <div class="col-md-2">
-            <div class="btn @btntype btn-round dvConnect draggable droppable" id="dvConnect_@UConnectId"
-                onclick="OpenConnect(@UCategoryId,@UConnectId,'@UConnectName','@UEndRigster', '@UConnectThingKey','@Seq','@UStartRigster','@UConnType','@URlyConnectId')">
-                <span>(@Seq) </span>
-                <img style="padding: 5px" src="../assets/images/@Image" />
-                <div class="btn  btn-danger btn-round btn-xs" onclick='DeleteConnect(@UConnectId,event)'>מחק</div>
+            <div class="btn btn-primary @btntype btn-round dvConnect draggable droppable" id="dvConnect_@UConnectId"
+                onclick="OpenConnect(@UCategoryId,@UConnectId,'@UConnectName','@UEndRigster', '@UConnectThingKey','@Seq','@UStartRigster','@UConnType','@URlyConnectId','@UTempRigester')">
+                <span style="float:right">(@Seq) </span>
+
+                <span class="badge" id="@UConnectId_tempId">@Utemp</span>
+
+            
+                <div style="float:left" class="btn  btn-danger btn-round btn-xs" onclick='DeleteConnect(@UConnectId,event)'>מחק</div>
                 <br />
                 <span>@UConnectName</span>
             </div>

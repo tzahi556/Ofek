@@ -3,11 +3,12 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script type="text/javascript" src="../assets/js/jquery-ui.js"></script>
-
+    <script src="../assets/js/bootstrap-multiselect.js"></script>
+    <link href="../assets/css/bootstrap-multiselect.css" rel="stylesheet" />
     <script type="text/javascript">
 
         var mydata;
-        var UCommandId = ""; 
+        var UCommandId = "";
         var UConnectIdSelected = "";
         var Status = 1;
 
@@ -82,13 +83,13 @@
 
             var TempEnd = $("#txtTempEnd").val();
 
-           
+
 
             var Type = "2";// ($("#loozortemp2").prop("checked")) ? 2 : 1;
 
-            
 
-            if (Type == 2 ) {
+
+            if (Type == 2) {
                 if (!$.isNumeric(TempStart) || !$.isNumeric(TempEnd)) {
 
                     OpenMessage("חובה להזין טמפרטורה תיקנית");
@@ -96,8 +97,8 @@
                 }
 
             }
-          
-           
+
+
 
 
             Ajax("Control_SetUserConnectStatus", "LoozOrTemp=" + Type + "&UtempStart=" + TempStart + "&UtempEnd=" + TempEnd + "&UConnectId=" + UConnectIdSelected);
@@ -132,10 +133,10 @@
 
             for (var i = 0; i < mydata.length; i++) {
 
-                // Add Command
-                //  if (mydata[i].UCommandName != UCommandName) {
 
                 UCommandName = mydata[i].UCommandName;
+
+
 
                 if (i == 0) {
                     FirstSelected = "ucommandSelected";
@@ -150,11 +151,25 @@
 
 
                 $("#ulCommand").append(elemCommand);
-                // }
+
+                $("#ddlCommands").append("<optgroup label='" + mydata[i].UCommandName + "'>" + getHtmlBakarConnect(mydata[i].UCommandId) + "</optgroup>");
+
+
 
             }
 
 
+
+            $("#ddlCommands,#ddlDays").multiselect({
+                enableClickableOptGroups: true,
+                includeSelectAllOption: true,
+                inheritClass: true,
+                enableClickableOptGroups: true,
+                buttonWidth: '100%'
+
+            });
+
+           
 
         }
 
@@ -166,10 +181,10 @@
             mydata = Ajax("Control_GetUserDataByUCommand", "UCommandId=" + UCommandId);
 
             //במידה והסתיים הסשן
-            if (mydata[0].IsConnect && mydata[0].IsConnect == "sessFalse") {
+            //if (mydata[0].IsConnect && mydata[0].IsConnect == "sessFalse") {
 
-                location.href = "../Login.aspx";
-            }
+            //    location.href = "../Login.aspx";
+            //}
 
             // יש סשן רק בקר לא במערכת
             //if (mydata[0].IsCommand) {
@@ -179,13 +194,13 @@
             //}
 
 
-            
+
 
             var UCategoryName = "";
             var UCategoryId = "";
 
             for (var i = 0; i < mydata.length; i++) {
-                
+
                 // Add Category
                 if (mydata[i].UCategoryName != UCategoryName) {
 
@@ -204,7 +219,7 @@
                     var ConnectTemplate = $("#dvConnectTemplate").html();
 
 
-                    
+
                     ConnectTemplate = ConnectTemplate.replace(/@UConnType2/g, mydata[i].UConnType2);
                     ConnectTemplate = ConnectTemplate.replace(/@LoozOrTemp/g, mydata[i].LoozOrTemp);
                     ConnectTemplate = ConnectTemplate.replace(/@URlyConnectId/g, mydata[i].URlyConnectId);
@@ -220,27 +235,41 @@
                     //{
 
 
-                        if (mydata[i].UStatus == "2")
-                            ConnectTemplate = ConnectTemplate.replace(/@img/g, (mydata[i].Value == "0") ? "Off" : ((mydata[i].Value == "1") ? "On" : "error"));
-                        else
-                            ConnectTemplate = ConnectTemplate.replace(/@img/g, (mydata[i].UStatus == "0")? "Off":"On");
+                    if (mydata[i].UStatus == "2")
+                        ConnectTemplate = ConnectTemplate.replace(/@img/g, (mydata[i].Value == "0") ? "Off" : ((mydata[i].Value == "1") ? "On" : "error"));
+                    else
+                        ConnectTemplate = ConnectTemplate.replace(/@img/g, (mydata[i].UStatus == "0") ? "Off" : "On");
 
-                   // }
+                    // }
 
                     $("#dvCategoryConainer_" + UCategoryId).append(ConnectTemplate);
 
-                    // אם הוא נצירת שבת
-                    if (mydata[i].UConnType == "5") {
-                        $("#dvStatic_" + mydata[i].UConnectId).css("display","none");
-                    }
-
                     $("#" + mydata[i].UConnectId + "_" + mydata[i].UStatus).addClass("imgSelected");
+
+
+                   // $("#ddlConnects").append("<option value=" + mydata[i].UConnectId + ">" + mydata[i].UConnectName + "</option>");
                 }
             }
 
             DefineDragAndDropEvents();
 
 
+        }
+
+        function getHtmlBakarConnect(CurrentCommandId) {
+
+            //$("#ddlConnects").html("");
+            //var CurrentCommandId = $("#ddlCommands").val();
+
+            var htmlOption = "";
+            var Currentmydata = Ajax("Control_GetUserDataByUCommand", "UCommandId=" + CurrentCommandId);
+            for (var i = 0; i < Currentmydata.length; i++) {
+
+
+                htmlOption += "<option value=" + Currentmydata[i].UConnectId + ">&nbsp;&nbsp;&nbsp;" + Currentmydata[i].UConnectName + "</option>";
+            }
+
+            return htmlOption;
         }
 
         function OpenCommand(UCommandIdSelected) {
@@ -259,30 +288,33 @@
         }
 
         function OpenConnect(UConnectId, UConnectName, URlyConnectId, UtempStart, UtempEnd, LoozOrTemp, UConnType2) {
-            
-
-            // רק אם היחידה המקושרת היא טמפרטורה תציג
-            if (UConnType2 != "3") {
-                $("#dvStatusContainer").hide();
-            } else {
-                $("#dvStatusContainer").show();
-                $("#txtTempStart").val(isEmpty(UtempStart));
-                $("#txtTempEnd").val(isEmpty(UtempEnd));
-            }
 
 
-          
+            //// רק אם היחידה המקושרת היא טמפרטורה תציג
+            //if (4 == "1") {
+            //    $("#dvStatusContainer").hide();
+            //} else {
+            //    $("#dvStatusContainer").show();
+            //    $("#txtTempStart").val(isEmpty(UtempStart));
+            //    $("#txtTempEnd").val(isEmpty(UtempEnd));
+            //}
 
 
-            $("#loozortemp" + LoozOrTemp).prop("checked", true);
+
+
+
+            //$("#loozortemp" + LoozOrTemp).prop("checked", true);
 
             UConnectIdSelected = UConnectId;
+            //$("#ddlCommands").val(UConnectIdSelected);
 
             GetConnectTimeLooz();
 
 
             $("#modalTitle").text(UConnectName);
             $("#myModal").modal();
+
+           
 
 
         }
@@ -299,7 +331,7 @@
 
             UConnectIdSelected = UConnectId;
             TypeSelected = Type;
-         
+
 
 
 
@@ -313,7 +345,7 @@
                 replaceStatusAfterSave(Type, UConnectIdSelected);
                 // 2 שעון
                 // 0 כיבוי
-                var myConnectdata =  AjaxAsync("Control_SetConnectAutoAction", "UConnectId=" + UConnectIdSelected
+                var myConnectdata = AjaxAsync("Control_SetConnectAutoAction", "UConnectId=" + UConnectIdSelected
                                   + "&UStatus=" + Type + "&UStaticOnHour=");
 
 
@@ -350,23 +382,23 @@
             //setTimeout(function () {
             //    FillData();
             //}, 2000);
-           
-           
+
+
 
 
             $("#ModalAuto").modal("hide");
 
         }
 
-        function replaceStatusAfterSave(uStatus,UConnectId) {
-           
+        function replaceStatusAfterSave(uStatus, UConnectId) {
+
             if (uStatus == "1") {
-                
+
                 $("#img_" + UConnectId).attr("src", "../assets/images/On.png");
-               
+
             } else {
                 $("#img_" + UConnectId).attr("src", "../assets/images/Off.png");
-              
+
 
             }
 
@@ -423,6 +455,8 @@
 
         function AddTimeToLooz() {
 
+         
+           // var connectList = $("#ddlCommands").val();
 
             var DayId = $("#ddlDays").val();
             var Time = $("#txtStartDate").val();
@@ -443,7 +477,7 @@
 
         }
 
-        function DeleteTime(UConnectLoozId,DayId) {
+        function DeleteTime(UConnectLoozId, DayId) {
 
             Ajax("Control_DeleteConnectLooz", "UConnectLoozId=" + UConnectLoozId + "&UConnectId=" + UConnectIdSelected + "&DayId=" + DayId);
             GetConnectTimeLooz();
@@ -545,8 +579,8 @@
                 </div>
                 <div class="modal-body" id="Div4">
 
-                    <div id="dvStatusContainer">
-                        <%--<div class="col-md-1">
+                    <%--  <div id="dvStatusContainer">
+                       <div class="col-md-1">
                             סטטוס:
                         </div>
 
@@ -558,7 +592,7 @@
 
 
                         </div>--%>
-                        <div class="col-md-1">
+                    <%--<div class="col-md-1">
                             <span class="help-block m-b-none">מטמפרטורה:</span>
                         </div>
 
@@ -582,20 +616,39 @@
                             <button type="button" class="btn btn-info btn-round" onclick="SaveConnectStatus()">
                                 <i class="glyphicon glyphicon-edit"></i>&nbsp; <span>שמור סטטוס</span>
                             </button>
-                        </div>
+                        </div>--%>
 
 
-                        <div class="clear">
+                    <%--  <div class="clear">
                             <hr />
                         </div>
-                    </div>
+                    </div>--%>
 
                     <div id="dvLoozContainer">
-                        <div class="col-md-1">
-                            <span class="help-block m-b-none">יום: </span>
-                        </div>
+
+
                         <div class="col-md-3">
-                            <select id="ddlDays" class="form-control">
+                            <label> בקר/תחנות</label>
+                            <select id="ddlCommands" class="form-control" 
+                                multiple="multiple" multi-select>
+
+
+                            </select>
+                        </div>
+
+
+                       <%-- <div class="col-md-2">
+                            <label>תחנה</label>
+                            <select id="ddlConnects" class="form-control">
+                            </select>
+                        </div>--%>
+
+
+
+
+                        <div class="col-md-2">
+                            <label>יום</label>
+                            <select id="ddlDays" class="form-control"  multiple="multiple" multi-select>
                                 <option value="1">ראשון</option>
                                 <option value="2">שני</option>
                                 <option value="3">שלישי</option>
@@ -606,11 +659,9 @@
                             </select>
                         </div>
 
-                        <div class="col-md-1">
-                            <span class="help-block m-b-none">שעה: </span>
-                        </div>
-                        <div class="col-md-3">
 
+                        <div class="col-md-2">
+                            <label>שעה</label>
                             <div class="input-group ls-group-input">
                                 <input type="text" id="txtStartDate" class="form-control">
                                 <span class="input-group-addon spDateIcon"><i class="glyphicon glyphicon-time"></i></span>
@@ -619,10 +670,12 @@
 
 
                         <div class="col-md-1">
+                            <br />
                             <img id="imgEnter" src="../assets/images/On.png" onclick="replaceStatus()" />
                         </div>
 
-                        <div class="col-md-3" style="text-align: center">
+                        <div class="col-md-2" style="text-align: center">
+                            <br />
                             <button type="button" class="btn btn-info btn-round" onclick="AddTimeToLooz()">
                                 <i class="glyphicon glyphicon-edit"></i>&nbsp; <span>הוסף ללו"ז</span>
                             </button>

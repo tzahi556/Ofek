@@ -30,6 +30,7 @@
 
 
         function FillData() {
+
             $("#dvMainContainer").html("");
 
             mydata = Ajax("Gen_GetTable", "TableName=School&Condition=Active=1");
@@ -46,26 +47,27 @@
             }
 
             $("#dvMainContainer").append("<div class='col-md-3'><div onclick='OpenSchool(null,null)' class='btn btn-success btn-round'><i class='glyphicon glyphicon-plus-sign'></i><br>הוסף בית ספר</div></div>");
-           
+
 
 
         }
 
         function OpenSchool(SelectSchoolId, Name) {
-         
+          
+
             SelectedSchoolId = SelectSchoolId;
             $("#txtSchoolName").val(Name);
             $("#myModal").modal();
         }
 
-        function SetAction(SelectSchoolId, SchoolName, Type,e) {
+        function SetAction(SelectSchoolId, SchoolName, Type, e) {
 
             e.cancelBubble = true;
             SelectedSchoolId = SelectSchoolId;
             if (Type == 1) {
                 $("div[id^='dvSchool']").removeClass("schoolSelected");
                 $("#dvSchool_" + SelectSchoolId).addClass("schoolSelected");
-                
+
 
                 $("#dvCurrentSchoolName").html(SchoolName);
 
@@ -75,9 +77,9 @@
 
             if (Type == 2) {
 
-                OpenMessage("האם אתה בטוח שברצונך למחוק את נתוני בית הספר?", "כן","לא");
+                OpenMessage("האם אתה בטוח שברצונך למחוק את נתוני בית הספר?", "כן", "לא");
 
-               
+
             }
 
 
@@ -85,14 +87,14 @@
                 location.href = "Bakar.aspx";
 
             }
-           
+
 
         }
 
 
         function CallBackFromYesNo(Type) {
 
-          
+
             if (Type == 1) {
                 Ajax("Admin_SetSchool", "SchoolId=" + SelectedSchoolId + "&SchoolName=&Type=2");
                 Ajax("Admin_SetSchoolIdToSession", "SchoolId=&SchoolName=");
@@ -104,7 +106,7 @@
 
         function UpdateSchool() {
 
-           //alert(SelectedSchoolId);
+            //alert(SelectedSchoolId);
             var SchoolName = $("#txtSchoolName").val();
 
             if (!SchoolName) {
@@ -132,25 +134,26 @@
                       
                     </h3>
 
-                   
+
 
                 </div>
                 <div class="panel-body">
-                     <div class="col-md-12">
-                         לחיצה אחת על 
-                          <b>"בית ספר"</b> 
-                         של בית ספר אותו תרצה לעבוד עליו באתר.
-                          <b> דאבל קליק</b> על 
-                          <b>"בית ספר"</b> 
-                         יקח אותך לבקרים שיש בבית ספר.
+                    <div class="col-md-12">
+                        לחיצה אחת על 
+                          <b>"בית ספר"</b>
+                        של בית ספר אותו תרצה לעבוד עליו באתר.
+                          <b>דאבל קליק</b> על 
+                          <b>"בית ספר"</b>
+                        יקח אותך לבקרים שיש בבית ספר.
 
                          
-                         <br /> <br />
-                     </div>
+                         <br />
+                        <br />
+                    </div>
                     <div class="col-md-12" id="dvMainContainer">
                     </div>
 
-                   
+
                 </div>
             </div>
         </div>
@@ -206,20 +209,14 @@
             <div class="btn btn-info btn-round dvConnect" id="dvSchool_@SchoolId" onclick='SetAction(@SchoolId,"@SchoolName",1,event)' ondblclick='SetAction(@SchoolId,"@SchoolName",3,event)'>
 
                 <span>@SchoolName</span>
-                <div class="btn btn-danger btn-round" style="float:left" onclick="SetAction(@SchoolId,'',2,event)">
-                מחק 
+                <div class="btn btn-danger btn-round" style="float: left" onclick="SetAction(@SchoolId,'',2,event)">
+                    מחק 
+                </div>
+                <div class="btn btn-primary btn-round" style="float: left" onclick='OpenSchool(@SchoolId,"@SchoolName")'>
+                    ערוך 
+                </div>
             </div>
-                <div class="btn btn-primary btn-round" style="float:left" onclick='OpenSchool(@SchoolId,"@SchoolName")'>
-                ערוך 
-            </div>
-              
-
-
-            </div>
-           
-           
         </div>
-
     </div>
 
     <div id="dvTimeTemplate" style="display: none">

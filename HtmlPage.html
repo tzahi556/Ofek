@@ -1,0 +1,82 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="../assets/js/lib/jquery-1.11.min.js"></script>
+    <script type="text/javascript">
+
+        var str = '1';
+        for (var dup = 0; dup < 20; dup++) {
+            str += str;
+        }
+
+        // Define a boundary
+        var boundary = "---------------------------7da24f2e50046";
+        var body = '--' + boundary + '\r\n'
+        // Parameter name is "file" and local filename is "temp.txt"
+        + 'Content-Disposition: form-data; name="file";'
+        + 'filename="temp.txt"\r\n'
+        // Add the file's mime-type
+        + 'Content-type: plain/text\r\n\r\n'
+        // Add your data:
+        + str + '\r\n'
+        + '--' + boundary + '--';
+
+        var test = function () {
+            var downloaded = 0,
+                uploaded = 0;
+            var downloadTimer, uploadTimer;
+            var downSpeed = 0,
+                upSpeed = 0;
+            var lastDownTime = 0;
+            lastUpTime = 0;
+
+            $.ajax({
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    //Upload progress
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        var endTime = (new Date()).getTime();
+                        upSpeed = ((evt.loaded - uploaded) * 1000) / ((endTime - lastUpTime) * 1024);
+                        //console.log('Up: ' + upSpeed);
+                        $('#us').text(upSpeed);
+                        uploaded = evt.loaded;
+                        lastUpTime = endTime;
+                    }, false);
+                    //Download progress
+                    xhr.addEventListener("progress", function (evt) {
+                        var endTime = (new Date()).getTime();
+                        downSpeed = ((evt.loaded - downloaded) * 1000) / ((endTime - lastDownTime) * 1024);
+                        //console.log('down: ' + downSpeed);
+                        $('#ds').text(downSpeed);
+                        downloaded = evt.loaded;
+                        lastDownTime = endTime;
+                    }, false);
+                    return xhr;
+                },
+                contentType: "multipart/form-data; boundary=" + boundary,
+                type: 'POST',
+                url: "test.php",
+                data: body,
+                success: function (data) {
+                    //Do something success-ish
+                }
+            });
+        };
+
+
+
+
+    </script>
+
+</head>
+<body>
+    <button onclick="test()">Test</button>
+    <div>
+        Upload Speed: <p id="us">0</p>
+    </div>
+    <div>
+        Download Speed: <p id="ds">0</p>
+    </div>
+</body>
+</html>

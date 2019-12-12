@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Bootstrap Multiselect (https://github.com/davidstutz/bootstrap-multiselect)
  * 
  * Apache License, Version 2.0:
@@ -50,8 +50,9 @@
 
             init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
                 var $element = $(element);
+               
                 var config = ko.toJS(valueAccessor());
-
+               
                 $element.multiselect(config);
 
                 if (allBindings.has('options')) {
@@ -299,7 +300,7 @@
             checkboxName: false,
             includeSelectAllOption: false,
             includeSelectAllIfMoreThan: 0,
-            selectAllText: ' Select all',
+            selectAllText: ' בחר הכל',
             selectAllValue: 'multiselect-all',
             selectAllName: false,
             selectAllNumber: true,
@@ -311,13 +312,13 @@
             filterBehavior: 'text',
             includeFilterClearBtn: true,
             preventInputChangeEvent: false,
-            nonSelectedText: 'None selected',
-            nSelectedText: 'selected',
-            allSelectedText: 'All selected',
+            nonSelectedText: 'לא נבחר',
+            nSelectedText: 'נבחרו',
+            allSelectedText: 'הכל נבחר',
             numberDisplayed: 3,
             disableIfEmpty: false,
             templates: {
-                button: '<button type="button" class="multiselect dropdown-toggle" data-toggle="dropdown"><span class="multiselect-selected-text"></span> <b class="caret"></b></button>',
+                button: '<button type="button" class="multiselect dropdown-toggle " data-toggle="dropdown"><span class="multiselect-selected-text"></span> <b class="caret"></b></button>',
                 ul: '<ul class="multiselect-container dropdown-menu"></ul>',
                 filter: '<li class="multiselect-item filter"><div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span><input class="form-control multiselect-search" type="text"></div></li>',
                 filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="glyphicon glyphicon-remove-circle"></i></button></span>',

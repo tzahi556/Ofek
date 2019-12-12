@@ -791,7 +791,30 @@ public class WebService : System.Web.Services.WebService
 
     }
 
+    [WebMethod]
+    public void Admin_UCommandRegister()
+    {
 
+
+        string UCommandId = GetParams("UCommandId");
+        string Startrigster = GetParams("Startrigster");
+        string Jump = GetParams("Jump");
+        string Type = GetParams("Type");
+       
+        // 1 יצירה 
+        // 2 מחיקה
+        // גרוטקס השקעות
+
+        DataTable dt = Dal.ExeSp("Admin_UCommandRegister", UCommandId, Type, Startrigster, Jump);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
+
+    }
+
+
+
+
+
+   // Ajax("Admin_UCommandRegister", "UCommandId=" + SelectedUCommandId + "&Startrigster=&Jump=&Type=2");
 
 
     [WebMethod]
@@ -925,7 +948,7 @@ public class WebService : System.Web.Services.WebService
         string UStartRigster = GetParams("UStartRigster");
         string UEndRigster = GetParams("UEndRigster");
 
-        //  string UConnectThingKey = GetParams("UConnectThingKey");
+        string UTempRigester = GetParams("UTempRigester");
         string UConnectSeq = GetParams("UConnectSeq");
 
         string UConnType = GetParams("UConnType");
@@ -949,7 +972,7 @@ public class WebService : System.Web.Services.WebService
 
 
         DataTable dt = Dal.ExeSp("Admin_SetUConnect", UCategoryId, UConnectId, UConnectName, UEndRigster,
-            UConnectSeq, UStartRigster, UConnType
+            UConnectSeq, UStartRigster, UConnType, UTempRigester
            );
 
 
@@ -958,6 +981,24 @@ public class WebService : System.Web.Services.WebService
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
 
     }
+
+    [WebMethod]
+    public void Admin_GetUConnectStartEndRegister()
+    {
+
+
+      
+        string UCommandId = GetParams("UCommandId");
+     
+
+
+        DataTable dt = Dal.ExeSp("Admin_GetUConnectStartEndRegister", UCommandId);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
+
+    }
+
+
+    
 
     private string BuildDataTableForRes(string resVal)
     {
