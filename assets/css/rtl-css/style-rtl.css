@@ -3207,7 +3207,8 @@ div.ls_divider.last {
 
 input.ls-group-input,
 .ls-group-input {
-  margin-bottom: 15px;
+  margin-bottom: 5px;
+
 }
 
 .multiselect-container > li > a {
@@ -10728,7 +10729,7 @@ font-size :18px;
        }
 
        .dvAlertRed{
-
+           
            font-weight:bold;
            color:firebrick;
            font-size:20px;

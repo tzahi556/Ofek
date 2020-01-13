@@ -11,7 +11,7 @@
         var UCommandId = "";
         var UConnectIdSelected = "";
         var Status = 1;
-
+        var typefromyesno = 0;
         $(document).ready(function () {
 
             if (!SchoolId) {
@@ -23,6 +23,7 @@
             }
 
             FillCommand();
+
             FillData();
             FillDate();
 
@@ -150,15 +151,15 @@
                                  + UCommandName + "</div></li>"
 
 
-                $("#ulCommand").append(elemCommand);
+               $("#ulCommand").append(elemCommand);
 
-                $("#ddlCommands").append("<optgroup label='" + mydata[i].UCommandName + "'>" + getHtmlBakarConnect(mydata[i].UCommandId) + "</optgroup>");
-
+               $("#ddlCommands").append("<optgroup label='" + mydata[i].UCommandName + "'>" + getHtmlBakarConnect(mydata[i].UCommandId) + "</optgroup>");
+                
 
 
             }
 
-
+           
 
             $("#ddlCommands,#ddlDays").multiselect({
                 enableClickableOptGroups: true,
@@ -169,10 +170,18 @@
 
             });
 
-           
+            //fillComboByCommandId();
 
         }
-
+        function fillComboByCommandId() {
+            
+            mydata = Ajax("Control_GetUserCommandData");
+            for (var i = 0; i < mydata.length; i++) {
+                if (mydata[i].UCommandId == UCommandId) {
+                    $("#ddlCommands").append("<optgroup label='" + mydata[i].UCommandName + "'>" + getHtmlBakarConnect(mydata[i].UCommandId) + "</optgroup>");
+                }
+            }
+        }
         function FillData() {
 
 
@@ -225,6 +234,7 @@
                     ConnectTemplate = ConnectTemplate.replace(/@URlyConnectId/g, mydata[i].URlyConnectId);
                     ConnectTemplate = ConnectTemplate.replace(/@UtempStart/g, mydata[i].UtempStart);
                     ConnectTemplate = ConnectTemplate.replace(/@UtempEnd/g, mydata[i].UtempEnd);
+                    ConnectTemplate = ConnectTemplate.replace(/@UTemp/g, (mydata[i].UTemp) ? mydata[i].UTemp : 0);
                     ConnectTemplate = ConnectTemplate.replace(/@UConnectName/g, mydata[i].UConnectName).replace(/@UConnectId/g, mydata[i].UConnectId);
 
                     // אם הוא נצירת שבת
@@ -244,13 +254,19 @@
 
                     $("#dvCategoryConainer_" + UCategoryId).append(ConnectTemplate);
 
+                    if (mydata[i].UConnType == 1) {
+
+                        $('#tempTuner_' + mydata[i].UConnectId).hide();
+
+                    } 
+
                     $("#" + mydata[i].UConnectId + "_" + mydata[i].UStatus).addClass("imgSelected");
 
 
-                   // $("#ddlConnects").append("<option value=" + mydata[i].UConnectId + ">" + mydata[i].UConnectName + "</option>");
+                    // $("#ddlConnects").append("<option value=" + mydata[i].UConnectId + ">" + mydata[i].UConnectName + "</option>");
                 }
             }
-
+            
             DefineDragAndDropEvents();
 
 
@@ -277,19 +293,19 @@
 
             $("#dvCommand_" + UCommandId).removeClass("ucommandSelected");
             UCommandId = UCommandIdSelected;
-
-
+            
+            
             FillData();
             $("#dvCommand_" + UCommandId).addClass("ucommandSelected");
 
-
+            
 
 
         }
 
-        function OpenConnect(UConnectId, UConnectName, URlyConnectId, UtempStart, UtempEnd, LoozOrTemp, UConnType2) {
+        function OpenConnect(UConnectId, UConnectName, URlyConnectId, UtempStart, UtempEnd, LoozOrTemp, UConnType2,e) {
 
-
+            e.cancelBubble = true;
             //// רק אם היחידה המקושרת היא טמפרטורה תציג
             //if (4 == "1") {
             //    $("#dvStatusContainer").hide();
@@ -307,14 +323,28 @@
 
             UConnectIdSelected = UConnectId;
             //$("#ddlCommands").val(UConnectIdSelected);
-
+            //fillComboByCommandId();
             GetConnectTimeLooz();
 
 
             $("#modalTitle").text(UConnectName);
             $("#myModal").modal();
 
-           
+            //
+            //  $("#ddlCommands").val(UConnectIdSelected);
+            $("#ddlCommands").multiselect("clearSelection");
+            $('#ddlCommands').multiselect('select', [UConnectIdSelected]);
+            $('#ddlCommands').multiselect('refresh');
+            $("#ddlDays").multiselect("clearSelection");
+            //$('#txtStartDate').val('').datetimepicker("update");
+
+            //var $hours = $('#txtStartDate').datepicker();
+
+            //$hours.datepicker('setDate', null);
+            $("#txtStartDate").val("");
+            FillDate();
+            //$('#ddlDays').multiselect('select', [UConnectIdSelected]);
+            //$('#ddlDays').multiselect('refresh');
 
 
         }
@@ -455,10 +485,10 @@
 
         function AddTimeToLooz() {
 
-         
-           // var connectList = $("#ddlCommands").val();
-
-            var DayId = $("#ddlDays").val();
+            var ConnectsList = GetSelectedValueMultiSelect('#ddlCommands');
+            // var connectList = $("#ddlCommands").val();
+            var DaysIds = GetSelectedValueMultiSelect('#ddlDays');
+           // var DayId = $("#ddlDays").val();
             var Time = $("#txtStartDate").val();
 
             if (Time.replace(/[_:]/g, '') == "") {
@@ -468,8 +498,8 @@
                 return;
             }
 
-            var myConnectdata = Ajax("Control_SetConnectLooz", "UConnectId=" + UConnectIdSelected
-                                    + "&DayId=" + DayId + "&Time=" + Time + "&Status=" + Status
+            var myConnectdata = Ajax("Control_SetConnectLooz", "UConnectId=" + ConnectsList
+                                    + "&DayId=" + DaysIds + "&Time=" + Time + "&Status=" + Status
             );
 
             GetConnectTimeLooz();
@@ -483,7 +513,7 @@
             GetConnectTimeLooz();
         }
 
-
+        
         TargetId = "";
         SourceId = "";
         function CallBackFromYesNo(Type) {
@@ -493,8 +523,11 @@
                 // מעתיק את כל הלוז
 
                 var TypeToCopy = "1";
-
-
+                typefromyesno = 1;
+                if (SourceId == UConnectIdSelected.toString()) {
+                    Ajax("Control_SetCopyConnectLoozToManyConnects", "&UConnectSourceId=" + SourceId + "&UConnectTargetId=" + TargetId);
+                    return;
+                }
                 if (SourceId.indexOf("dvConnect_") != "-1" && TargetId.indexOf("dvConnect_") != "-1") {
 
                     SourceId = SourceId.replace("dvConnect_", "");
@@ -511,20 +544,50 @@
 
 
 
-                Ajax("Control_SetCopyConnectLooz", "UConnectId=" + UConnectIdSelected + "&Type=" + TypeToCopy + "&UConnectSourceId=" + SourceId
-                                    + "&UConnectTargetId=" + TargetId);
-
+               Ajax("Control_SetCopyConnectLooz", "UConnectId=" + UConnectIdSelected + "&Type=" + TypeToCopy + "&UConnectSourceId=" + SourceId
+                                   + "&UConnectTargetId=" + TargetId);
+                
                 if (TypeToCopy == "2") {
 
                     GetConnectTimeLooz();
                 }
-
+                
 
             }
         }
+        function CopyLoozFromModal(type) {
+            TargetId = '';
+            var ConnectsList = GetSelectedValueMultiSelect('#ddlCommands');
+            var ConnectsNames = '';
+            
+            for (i = 0; i < ConnectsList.length; i++) {
+                if (ConnectsList[i] == UConnectIdSelected) {
+                    continue;
+                }
+                var data = Ajax("Gen_GetTable", "TableName=UConnect&Condition=UConnectId=" + ConnectsList[i]);
+                if (i > 0 && i < ConnectsList.length) {
+                    ConnectsNames += ',';
+                    TargetId += ',';
+                }
 
+                ConnectsNames += data[0].UConnectName;
 
+                TargetId += ConnectsList[i].toString();
+            }
+            SourceId = UConnectIdSelected.toString();
+           
 
+            OpenMessage(" האם להעתיק לוז נוכחי אל הנקודות:" + '\n' + ConnectsNames.toString() + "?","כן","לא");
+            
+        }
+        function ChangeTemp(UConnectId, Temp, Val,e) {
+            e.stopPropagation();
+            Ajax("Admin_UpdateTempByConnectId", "UConnectId=" + UConnectId + "&val=" + Val);
+            var data = Ajax("Gen_GetTable", "TableName=UConnect&Condition=UConnectId=" + UConnectId);
+            Temp =  data[0].UTemp;
+            $('#temp_' + UConnectId).html(Temp);
+
+        }
 
         function DefineDragAndDropEvents() {
             $(".draggable").draggable({
@@ -625,19 +688,21 @@
                     </div>--%>
 
                     <div id="dvLoozContainer">
-
-
+                        <div class="col-md-2" style="text-align: center">
+                            <label>העתק אל התחנות</label>
+                            <button type="button" id=""  class="btn btn-success btn-round" onclick=" CopyLoozFromModal()">
+                                <i class="glyphicon glyphicon-edit"></i>&nbsp; <span>  העתק לו"ז נוכחי </span>
+                            </button>
+                        </div>
                         <div class="col-md-3">
-                            <label> בקר/תחנות</label>
-                            <select id="ddlCommands" class="form-control" 
+                            <label>בקר/תחנות</label>
+                            <select id="ddlCommands" class="form-control"
                                 multiple="multiple" multi-select>
-
-
                             </select>
                         </div>
 
 
-                       <%-- <div class="col-md-2">
+                        <%-- <div class="col-md-2">
                             <label>תחנה</label>
                             <select id="ddlConnects" class="form-control">
                             </select>
@@ -648,7 +713,7 @@
 
                         <div class="col-md-2">
                             <label>יום</label>
-                            <select id="ddlDays" class="form-control"  multiple="multiple" multi-select>
+                            <select id="ddlDays" class="form-control" multiple="multiple" multi-select>
                                 <option value="1">ראשון</option>
                                 <option value="2">שני</option>
                                 <option value="3">שלישי</option>
@@ -811,8 +876,18 @@
 
     <div id="dvConnectTemplate" style="display: none">
         <div class="col-md-2">
-            <div class="btn btn-default btn-round dvConnect draggable droppable dvConnectPanel" id="dvConnect_@UConnectId" onclick="OpenConnect(@UConnectId,'@UConnectName','@URlyConnectId','@UtempStart','@UtempEnd',@LoozOrTemp,@UConnType2)">
+            <div style="height:60px;" class="btn btn-default btn-round dvConnect draggable droppable dvConnectPanel" id="dvConnect_@UConnectId" onclick="OpenConnect(@UConnectId,'@UConnectName','@URlyConnectId','@UtempStart','@UtempEnd',@LoozOrTemp,@UConnType2,event)">
                 <img id="img_@UConnectId" src="../assets/images/@img.png" />
+                
+                <span style="align-items:center;" id="tempTuner_@UConnectId">                 
+                    
+                   
+                    <i style="padding:0;" class='btn btn-dark btn-round glyphicon glyphicon-plus-sign' onclick="ChangeTemp(@UConnectId,@UTemp,1,event)">
+
+                    </i>
+                    <span id="temp_@UConnectId">@UTemp</span>
+                    <i  style="padding:0;" class='btn btn-dark btn-round glyphicon glyphicon-minus-sign' onclick="ChangeTemp(@UConnectId,@UTemp,-1,event)"></i>
+                 </span>                                    
                 <br />
                 <span>@UConnectName</span>
             </div>

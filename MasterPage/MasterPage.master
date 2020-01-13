@@ -93,8 +93,12 @@
            
             if (!UserId)
                 location.href = '../Login.aspx';
-
-            if (RoleId == "2") $(".liAdmin").hide();
+            if (RoleId == "2") {
+            
+                $(".liAdmin").hide();
+                $('.liSuperAdmin').show();
+            }
+            if (RoleId == "3") $(".liAdmin").hide();
 
             $("#spUserName").text(UserName);
             $("#dvCurrentSchoolName").html(Name);
@@ -233,12 +237,13 @@
                
                      <li class="liAdmin"><a href="../ControlAdmin/School.aspx"><i class="glyphicon glyphicon-tasks"></i><span>ניהול בתי ספר</span></a></li>
                      <li class="liAdmin"><a href="../ControlAdmin/Bakar.aspx"><i class="fa fa-dashboard"></i><span>בקרים ונקודות</span></a></li>
-                     <li class="liAdmin"><a href="../ControlAdmin/Users.aspx"><i class="glyphicon glyphicon-user"></i><span>משתמשים והרשאות</span></a></li>
+                     <li class="liAdmin liSuperAdmin"><a href="../ControlAdmin/Users.aspx"><i class="glyphicon glyphicon-user"></i><span>משתמשים והרשאות</span></a></li>
+                     <li class="liAdmin"><a href="../ControlAdmin/ControllerTable.aspx"><i class="glyphicon glyphicon-flash"></i><span>טבלת נקודות</span></a></li>
                      <li><a href="../Control/Dashboard.aspx"><i class="fa fa-bar-chart-o"></i><span>פאנל ארגון חשמל</span></a></li>
                      <li onclick="ExistSystem()"><a href="#"><i class="fa fa-power-off"></i><span>יציאה מהמערכת</span> </a></li>
                        
                 </ul>
-
+               
                
                 <!--Left navigation end-->
             </section>

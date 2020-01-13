@@ -189,14 +189,21 @@ public class WebService : System.Web.Services.WebService
         string UConnectId = GetParams("UConnectId");
         string DayId = GetParams("DayId");
         string Time = GetParams("Time");
-        bool Status = (GetParams("Status") == "0") ? false : true;
+        string Status = GetParams("Status");//(GetParams("Status") == "0") ? false : true;
 
         DataTable dt = Dal.ExeSp("Control_SetConnectLooz", UConnectId, DayId, Time, Status);
 
         // Control_GetLoozForUpdateUcontrol("0", UConnectId, DayId);
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
     }
-
+    [WebMethod]
+    public void Control_SetCopyConnectLoozToManyConnects()
+    {
+        string SourceId = GetParams("UConnectSourceId");
+        string TargetId = GetParams("UConnectTargetId");
+        DataTable dt = Dal.ExeSp("Control_SetCopyConnectLoozToManyConnects", SourceId, TargetId);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
+    }
     [WebMethod]
     public void Control_SetUserConnectStatus()
     {
@@ -692,12 +699,22 @@ public class WebService : System.Web.Services.WebService
             cookie["Name"] = Server.UrlEncode(SchoolName);
         }
 
+        
+
         cookie.Expires = DateTime.Now.AddYears(90);
         HttpContext.Current.Response.Cookies.Add(cookie);
         // cookie["SchoolId"] = SchoolId;
 
     }
+    [WebMethod]
+    public void Admin_UpdateTempByConnectId()
+    {
+        string UConnectId = GetParams("UConnectId");
+        string value = GetParams("val");
+        DataTable dt = Dal.ExeSp("Admin_UpdateTempByConnectId", UConnectId, value);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
 
+    }
     [WebMethod]
     public void Admin_SetSchool()
     {
@@ -778,6 +795,15 @@ public class WebService : System.Web.Services.WebService
         DataTable dt = Dal.ExeSp("Admin_SetUCommand", UCommandId, UCommandName, UCommIP, UCommPORT, HttpContext.Current.Request.Cookies["UserData"]["SchoolId"].ToString());
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
 
+    }
+    [WebMethod]
+    public void Admin_GetUConnectsBySchoolId()
+    {
+
+        string SchoolId = GetParams("SchoolId");
+
+        DataTable dt = Dal.ExeSp("Admin_GetUConnectsBySchoolId", SchoolId);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
     }
 
     [WebMethod]

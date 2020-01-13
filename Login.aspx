@@ -70,7 +70,7 @@
             var UserName = $("#txtUserName").val();
             var data = Ajax("User_GetUserEnter", "UserName=" + UserName + "&Password=" + Password);
            
-
+            
             if (data[0]) {
 
                 if (data[0].APISessionId == "") {
@@ -97,7 +97,6 @@
             }
 
         }
-
 
 
         function Ajax(sp, params) {
