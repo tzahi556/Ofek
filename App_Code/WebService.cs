@@ -13,6 +13,7 @@ using System.Activities.Statements;
 
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+//using SendAndReadDataFromFatek;
 
 /// <summary>
 /// Summary description for WebService
@@ -87,13 +88,23 @@ public class WebService : System.Web.Services.WebService
     [WebMethod]
     public void User_GetUserEnter()
     {
+        //  List<ClassStatus> dd = WebDatesManager.Instance.getDateListClassesStatus(1);
+        //  OfekWebManager.Instance.changedClassForceStatus(102,1);
+        // OfekWebManager.IP = "192.168.1.20";
+        //   OfekWebManager.Instance.changedClassForceStatus(102, 1);
+
+
+        //ow.sendEliorTest(5100, 5051, false);
+        //ow.sendEliorTest(5150, 5101, false);
+        //ow.sendEliorTest(5200, 5151, false);
+        //   ow.changedClassForceStatus(102, 1);
 
         string UserName = GetParams("UserName");
         string Password = GetParams("Password");
 
         UControlAPI api = new UControlAPI();
 
-        string sess = api.GetSessionId();
+    //    string sess = api.GetSessionId();
 
         DataTable dt = Dal.ExeSp("User_GetUserEnter", UserName, Password);
 
@@ -109,7 +120,7 @@ public class WebService : System.Web.Services.WebService
             //School Name
             cookie["SchoolId"] = Server.UrlEncode(dt.Rows[0]["SchoolId"].ToString());
             cookie["Name"] = Server.UrlEncode(dt.Rows[0]["Name"].ToString());
-            cookie["APISessionId"] = sess;
+           // cookie["APISessionId"] = sess;
 
 
             // FormsAuthentication.RedirectFromLoginPage(dt.Rows[0]["UserName"].ToString(), true);
@@ -119,8 +130,8 @@ public class WebService : System.Web.Services.WebService
 
         }
 
-        dt.Columns.Add("APISessionId");
-        dt.Rows[0]["APISessionId"] = sess;
+     //   dt.Columns.Add("APISessionId");
+     //   dt.Rows[0]["APISessionId"] = sess;
         //  SessionOfWebTelit = sess;
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
     }
@@ -138,15 +149,62 @@ public class WebService : System.Web.Services.WebService
     [WebMethod]
     public void Control_GetUserCommandData()
     {
-        UControlAPI api = new UControlAPI();
+        //  string UserId = GetParams("UserId");
+        //     string SchoolId = GetParams("SchoolId");
+        //  UControlAPI api = new UControlAPI();
         DataTable dt = Dal.ExeSp("Control_GetUserCommandData", HttpContext.Current.Request.Cookies["UserData"]["UserId"], HttpContext.Current.Request.Cookies["UserData"]["SchoolId"]);
 
 
+        // DataTable dt = Dal.ExeSp("Control_GetUserCommandData", UserId, SchoolId);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
+    }
+
+    [WebMethod]
+    public void Control_GetUserConnectData()
+    {
+        string UserId = GetParams("UserId");
+        string UCommandId = GetParams("UCommandId");// to do update by command
+        DataTable dtRegisters = Dal.ExeSp("Control_GetUserConnectData", UserId, UCommandId);
+
+      //  DataTable dtRegisters = ds.Tables[0];// טבלה ראשונה לפי רגיסטרים
+        DataTable dt = new DataTable();
+
+
+        if (dtRegisters.Rows.Count > 0)
+        {
+            string IP = dtRegisters.Rows[0]["UCommIP"].ToString();
+            OfekWebManager ow = new OfekWebManager(IP);
+            bool[] statusArray = ow.GetAllStatuses(dtRegisters.Rows.Count);
+
+            for (int i = 0; i < dtRegisters.Rows.Count; i++)
+            {
+                dtRegisters.Rows[i]["Value"] = (statusArray[i]) ? "1" : "0";
+            }
+
+            DataView dv = dtRegisters.DefaultView;
+            dv.Sort = "Seq, UConnSeq";
+            dt = dv.ToTable();
+
+
+        }
+
+      
 
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
     }
 
+    [WebMethod]
+    public void Control_GetUserConnectDataCombo()
+    {
+        //  string UserId = GetParams("UserId");
+        string SchoolId = GetParams("SchoolId");
+        //  UControlAPI api = new UControlAPI();
+        // DataTable dt = Dal.ExeSp("Control_GetUserCommandData", HttpContext.Current.Request.Cookies["UserData"]["UserId"], HttpContext.Current.Request.Cookies["UserData"]["SchoolId"]);
 
+
+        DataTable dt = Dal.ExeSp("Control_GetUserConnectDataCombo", SchoolId);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
+    }
 
     [WebMethod]
     public void Control_GetUserDataByUCommand()
@@ -170,7 +228,7 @@ public class WebService : System.Web.Services.WebService
         //}
 
 
-       // dt = GetStatusObjFromTELIT(dt, api, "UConnKey", true);
+        // dt = GetStatusObjFromTELIT(dt, api, "UConnKey", true);
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
     }
     [WebMethod]
@@ -242,9 +300,14 @@ public class WebService : System.Web.Services.WebService
         string UStatus = GetParams("UStatus");
         string UStaticOnHour = GetParams("UStaticOnHour");
         DataTable dt = Dal.ExeSp("Control_SetConnectAutoAction", UConnectId, UStatus, UStaticOnHour);
-        SetActionTOUControl(dt, UStatus, UStaticOnHour, "");
 
+        string IP = dt.Rows[0]["UCommIP"].ToString();
 
+        OfekWebManager ow = new OfekWebManager(IP);
+        ow.SendConnectToFatek(dt);
+
+        // ow.sendEliorTest(Convert.ToInt32(EndRegister), Convert.ToInt32(StartRegister), (type == "1") ? true : false);
+        //  SetActionTOUControl(dt, UStatus, UStaticOnHour, "");
         //if (dt.Rows[0]["UConnType"].ToString() == "2")// אם מדובר במזגן פולסים תתן עוד אחד לעורר 
         //{
 
@@ -699,11 +762,24 @@ public class WebService : System.Web.Services.WebService
             cookie["Name"] = Server.UrlEncode(SchoolName);
         }
 
-        
+
 
         cookie.Expires = DateTime.Now.AddYears(90);
         HttpContext.Current.Response.Cookies.Add(cookie);
         // cookie["SchoolId"] = SchoolId;
+
+    }
+    [WebMethod]
+    public void Admin_SetConnectStatus()
+    {
+        string EndRegister = GetParams("EndRegister");
+        string StartRegister = GetParams("StartRegister");
+        string type = GetParams("Type");
+
+
+
+        //DataTable dt = Dal.ExeSp("Admin_UpdateTempByConnectId", UConnectId, value);
+        //HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
 
     }
     [WebMethod]
@@ -712,6 +788,14 @@ public class WebService : System.Web.Services.WebService
         string UConnectId = GetParams("UConnectId");
         string value = GetParams("val");
         DataTable dt = Dal.ExeSp("Admin_UpdateTempByConnectId", UConnectId, value);
+        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
+
+    }
+    [WebMethod]
+    public void Admin_GetUserConnectsBySchoolId()
+    {
+        string SchoolId = GetParams("SchoolId");
+        DataTable dt = Dal.ExeSp("Admin_GetUserConnectsBySchoolId", SchoolId);
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
 
     }
@@ -760,10 +844,14 @@ public class WebService : System.Web.Services.WebService
         string LastName = GetParams("LastName");
         string UserName = GetParams("UserName");
         string Password = GetParams("Password");
-        string UCommands = GetParams("UCommands");
+        string UConnects = GetParams("UConnects");
         string UserId = GetParams("UserId");
+        string RoleId = GetParams("RoleId");
+        string Editable = (GetParams("Editable") == "true") ? "1" : "0";
+        string UCommands = GetParams("UCommands");
+        //if(Editable == "true")
 
-        DataTable dt = Dal.ExeSp("Admin_SetUsers", UserId, FirstName, LastName, UserName, Password, UCommands, HttpContext.Current.Request.Cookies["UserData"]["SchoolId"].ToString());
+        DataTable dt = Dal.ExeSp("Admin_SetUsers", UserId, FirstName, LastName, RoleId, Editable, UserName, Password, UConnects, UCommands, HttpContext.Current.Request.Cookies["UserData"]["SchoolId"].ToString());
         HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
 
     }
@@ -789,7 +877,7 @@ public class WebService : System.Web.Services.WebService
         string UCommIP = GetParams("UCommIP");
         string UCommPORT = GetParams("UCommPORT");
         string UCommandName = GetParams("UCommandName");
-       
+
 
 
         DataTable dt = Dal.ExeSp("Admin_SetUCommand", UCommandId, UCommandName, UCommIP, UCommPORT, HttpContext.Current.Request.Cookies["UserData"]["SchoolId"].ToString());
@@ -826,7 +914,7 @@ public class WebService : System.Web.Services.WebService
         string Startrigster = GetParams("Startrigster");
         string Jump = GetParams("Jump");
         string Type = GetParams("Type");
-       
+
         // 1 יצירה 
         // 2 מחיקה
         // גרוטקס השקעות
@@ -840,7 +928,7 @@ public class WebService : System.Web.Services.WebService
 
 
 
-   // Ajax("Admin_UCommandRegister", "UCommandId=" + SelectedUCommandId + "&Startrigster=&Jump=&Type=2");
+    // Ajax("Admin_UCommandRegister", "UCommandId=" + SelectedUCommandId + "&Startrigster=&Jump=&Type=2");
 
 
     [WebMethod]
@@ -964,7 +1052,7 @@ public class WebService : System.Web.Services.WebService
     public void Admin_SetUConnect()
     {
 
-        
+
         string UCategoryId = GetParams("UCategoryId");
         string UConnectId = GetParams("UConnectId");
 
@@ -978,8 +1066,8 @@ public class WebService : System.Web.Services.WebService
         string UConnectSeq = GetParams("UConnectSeq");
 
         string UConnType = GetParams("UConnType");
-       
-       //string URlyConnectId = GetParams("URlyConnectId");
+
+        //string URlyConnectId = GetParams("URlyConnectId");
 
 
         // אם נצירת שבת אין מה לגשת לטליט זה וירטואלי
@@ -1013,9 +1101,9 @@ public class WebService : System.Web.Services.WebService
     {
 
 
-      
+
         string UCommandId = GetParams("UCommandId");
-     
+
 
 
         DataTable dt = Dal.ExeSp("Admin_GetUConnectStartEndRegister", UCommandId);
@@ -1024,7 +1112,7 @@ public class WebService : System.Web.Services.WebService
     }
 
 
-    
+
 
     private string BuildDataTableForRes(string resVal)
     {

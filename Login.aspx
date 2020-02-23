@@ -84,7 +84,7 @@
                 
                 if (data[0].RoleId=="1")
                     location.href = "ControlAdmin/School.aspx";
-                if (data[0].RoleId == "2")
+                if (data[0].RoleId == "2" || data[0].RoleId == "3")
                     location.href = "Control/Dashboard.aspx";
             }
 

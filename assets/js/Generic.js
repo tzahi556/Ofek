@@ -1,4 +1,4 @@
-$(function () {
+ο»Ώ$(function () {
 
 
     DefinitionMask();
@@ -179,7 +179,7 @@ function ConvertHebrewDateToJSDATE(HebrewDate, adddays, format) {
 
 
 
-    // ιω μωιν μα μδεψιγ ΰηγ αηεγωιν
+    // Γ©ΓΉ Γ¬ΓΉΓ©Γ­ Γ¬Γ΅ Γ¬Γ¤Γ¥ΓΈΓ©Γ£ Γ Γ§Γ£ Γ΅Γ§Γ¥Γ£ΓΉΓ©Γ­
     var result = new Date(year, eval(month) - 1, day);
 
     if (adddays) {
@@ -191,7 +191,7 @@ function ConvertHebrewDateToJSDATE(HebrewDate, adddays, format) {
 
         var curr_date = result.getDate();
 
-        // τδ αωμιτδ μδερισ 1
+        // Γ΄Γ¤ Γ΅ΓΉΓ¬Γ©Γ΄Γ¤ Γ¬Γ¤Γ¥Γ±Γ©Γ³ 1
         var curr_month = result.getMonth() + 1;
         var curr_year = result.getFullYear();
 
@@ -238,13 +238,13 @@ function getDateTimeNowFormat() {
 
 function getDayInWeekString(day) {
 
-    if (day == "1") return "ιεν ΰ'";
-    if (day == "2") return "ιεν α'";
-    if (day == 3) return "ιεν β'";
-    if (day == 4) return "ιεν γ'";
-    if (day == 5) return "ιεν δ'";
-    if (day == 6) return "ιεν ωιωι";
-    if (day == 7) return "ιεν ωαϊ";
+    if (day == "1") return "Γ©Γ¥Γ­ Γ '";
+    if (day == "2") return "Γ©Γ¥Γ­ Γ΅'";
+    if (day == 3) return "Γ©Γ¥Γ­ ΓΆ'";
+    if (day == 4) return "Γ©Γ¥Γ­ Γ£'";
+    if (day == 5) return "Γ©Γ¥Γ­ Γ¤'";
+    if (day == 6) return "Γ©Γ¥Γ­ ΓΉΓ©ΓΉΓ©";
+    if (day == 7) return "Γ©Γ¥Γ­ ΓΉΓ΅ΓΊ";
 
 
 
@@ -252,7 +252,7 @@ function getDayInWeekString(day) {
 
 function parseJsonDate(jsonDateString, Type) {
 
-    // τεψξθ μϊφεβδ
+    // Γ΄Γ¥ΓΈΓ®Γ¨ Γ¬ΓΊΓ¶Γ¥ΓΆΓ¤
     if (Type == "1")
         return formatDate(new Date(parseInt(jsonDateString.replace('/Date(', ''))));
 
@@ -269,7 +269,7 @@ function addDays(date, days, type) {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
 
-    // τεψξθ μϊφεβδ
+    // Γ΄Γ¥ΓΈΓ®Γ¨ Γ¬ΓΊΓ¶Γ¥ΓΆΓ¤
     if (type == "1")
         return formatDate(result);
     if (type == "2")
@@ -289,7 +289,7 @@ function PrintDiv(data, Area) {
     var mywindow = window.open('', 'my div', 'height=400,width=600');
     mywindow.document.write('<html dir="rtl"><head>'
 
-     + "<title>ριγεψ ςαεγδ " + Area + "</title>");
+     + "<title>Γ±Γ©Γ£Γ¥ΓΈ Γ²Γ΅Γ¥Γ£Γ¤ " + Area + "</title>");
 
 
     //  mywindow.document.write('<link rel="stylesheet" href="http://172.22.11.52/ShiftPlaning/assets/css/rtl-css/Print.css" type="text/css" />');
@@ -585,22 +585,22 @@ function getDayAndHour(HourId) {
 
     switch (day) {
         case "1":
-            res = " ιεν ψΰωεο ";
+            res = " Γ©Γ¥Γ­ ΓΈΓ ΓΉΓ¥Γ― ";
             break;
         case "2":
-            res = " ιεν ωπι ";
+            res = " Γ©Γ¥Γ­ ΓΉΓ°Γ© ";
             break;
         case "3":
-            res = " ιεν ωμιωι ";
+            res = " Γ©Γ¥Γ­ ΓΉΓ¬Γ©ΓΉΓ© ";
             break;
         case "4":
-            res = " ιεν ψαιςι ";
+            res = " Γ©Γ¥Γ­ ΓΈΓ΅Γ©Γ²Γ© ";
             break;
         case "5":
-            res = " ιεν ηξιωι ";
+            res = " Γ©Γ¥Γ­ Γ§Γ®Γ©ΓΉΓ© ";
             break;
         case "6":
-            res = " ιεν ωιωι ";
+            res = " Γ©Γ¥Γ­ ΓΉΓ©ΓΉΓ© ";
             break;
 
 
@@ -609,7 +609,7 @@ function getDayAndHour(HourId) {
     }
 
 
-    return res + " ωςδ " + hour;
+    return res + " ΓΉΓ²Γ¤ " + hour;
 
 
 }
@@ -640,9 +640,9 @@ function GetComboMultiSelect(elemid, sp, params, Value, Display, Data) {
         inheritClass: true,
         enableClickableOptGroups: true,
         buttonWidth: '100%',
-        selectAllText: "αηψ δλμ",
-        allSelectedText: "δλμ",
-        nonSelectedText: ' --- αηψ ---  '
+        selectAllText: "Χ‘Χ—Χ¨ Χ”Χ›Χ",
+        allSelectedText: "Χ”Χ›Χ Χ Χ‘Χ—Χ¨",
+        nonSelectedText: ' --- Χ‘Χ—Χ¨ Χ‘Χ§Χ¨ ---  '
 
 
     });

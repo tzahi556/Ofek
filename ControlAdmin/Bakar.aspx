@@ -409,7 +409,7 @@
            
             var temp = (UConnType == 1) ? "" : "txtUTempRigester";
 
-            var res = CheckValid("txtUConnectName", "txtUStartRigster", "txtUEndRigster", "txtUConnectSeq", temp);
+            var res = CheckValid("txtUConnectName", "txtUConnectSeq", temp);
           
             if (!res) return;
 

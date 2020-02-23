@@ -1,0 +1,9 @@
+ScheduleDB.accdb
+ClassesDictionary CurrentTag String
+
+// להריץ
+ALTER TABLE ClassesDictionary ADD CurrentStatus String
+
+ALTER TABLE Schedule ADD LoozId int
+
+Update Schedule set LoozId=0

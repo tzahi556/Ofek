@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage/MasterPage.master"
-     CodeFile="ControllerTable.aspx.cs" Inherits="ControlAdmin_ControllerTable" %>
+    CodeFile="ControllerTable.aspx.cs" Inherits="ControlAdmin_ControllerTable" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
@@ -8,8 +8,8 @@
     <script type="text/javascript">
 
         var mydata;
+        var CommandSelected;
 
-        
 
 
         $(document).ready(function () {
@@ -45,7 +45,7 @@
         }
 
         function ConnectChange(connectId) {
-            
+
             var UConnType = $("#connectType_" + connectId).val();
             if (UConnType == 2) {
                 $("#tempRegister_" + connectId).prop('disabled', false);
@@ -54,7 +54,7 @@
             else {
                 $("#tempRegister_" + connectId).val("");
                 $("#tempRegister_" + connectId).attr('placeholder', "טמפרטורת רגיסטר");
-                $("#tempRegister_" + connectId).prop('disabled', true);     
+                $("#tempRegister_" + connectId).prop('disabled', true);
             }
         }
         function FillDropDownList() {
@@ -83,50 +83,44 @@
             GetComboMultiSelect("#ddlUCommand", "", "", "UCommandId", "UCommandName", "");
 
         }
+    
 
         function FillData() {
-            
-            // $("#MainContainer").html("");
-            var UconnType = "";
-            var connectId = "";
-            mydata = Ajax("Admin_GetUConnectsBySchoolId","SchoolId="+ SchoolId);
+            CommandSelected = GetSelectedValueMultiSelect("#ddlUCommand");
             $("#dvConnectContainer").html("");
-            for (var i = 0; i < mydata.length; i++) {
-                
-                connectId = mydata[i].UConnectId;
-                Utempreg = mydata[i].UTempRigester;
+            //for (i = 0; i < UCommands.length; i++) {
+            //var commandId = UCommands[i];
+            var connectsByCommandData = Ajax("Admin_GetCategoryAndConnectByCommand", "UCommandId=" + CommandSelected);
+            // connectId = connectsByCommandData[i].UConnectId;
+            for (var i = 0; i < connectsByCommandData.length; i++) {
+                //var connectsData = Ajax("Gen_GetTable", "TableName=UConnect&Condition=UConnectId=" + connectsByCommandData[i].UConnectId);
+                var connectId = connectsByCommandData[i].UConnectId;
+
                 ClearInputAlert("connectName_" + connectId, "startRegister_" + connectId, "endRegister_" + connectId, "connectType_" + connectId, "location_" + connectId, "tempRegister_" + connectId);
                 var UserConnectsTemplate = $("#dvConnectTemplate").html();
-                UserConnectsTemplate = UserConnectsTemplate.replace(/@Id/g, mydata[i].UConnectId);
+                UserConnectsTemplate = UserConnectsTemplate.replace(/@Id/g, connectId);
 
                 $("#dvConnectContainer").append(UserConnectsTemplate);
                 //SchoolTemplate = SchoolTemplate.replace(/@SchoolName/g, mydata[i].Name.replace(/["']/g, "''")).replace(/@SchoolId/g, mydata[i].SchoolId);
-                
-                UconnType = mydata[i].UConnType;
+
+                UconnType = connectsByCommandData[i].UConnType;
                 if (UconnType == 1) {
                     $("#connectType_" + connectId).val(1);
-                    $("#tempRegister_" + connectId).prop('disabled',true);
+                    $("#tempRegister_" + connectId).prop('disabled', true);
                 }
-                if (UconnType == 2)
-                {
+                if (UconnType == 2) {
                     $("#connectType_" + connectId).val(2);
-                    $("#tempRegister_" + connectId).val(mydata[i].UTempRigester);
+                    $("#tempRegister_" + connectId).val(connectsByCommandData[i].UTempRigester);
                 }
-                $("#connectName_" + connectId).val(mydata[i].UConnectName);
-                $("#startRegister_" + connectId).val(mydata[i].UStartRigster);
-                $("#endRegister_" + connectId).val(mydata[i].UEndRigster);
-                
-                $("#location_" + connectId).val(mydata[i].UConnSeq);
+                $("#connectName_" + connectId).val(connectsByCommandData[i].UConnectName);
+                $("#startRegister_" + connectId).val(connectsByCommandData[i].UStartRigster);
+                $("#endRegister_" + connectId).val(connectsByCommandData[i].UEndRigster);
 
-
-                //$("#dvConnectContainer").append(UserConnectsTemplate);
-
+                $("#location_" + connectId).val(connectsByCommandData[i].UConnSeq);
             }
 
-            //$("#dvMainContainer").append("<div class='col-md-3'><div onclick='OpenSchool(null,null)' class='btn btn-success btn-round'><i class='glyphicon glyphicon-plus-sign'></i><br>הוסף בית ספר</div></div>");
 
-
-
+            //}
         }
         function ClearInputAlert() {
             for (i = 0; i < arguments.length; i++) {
@@ -135,12 +129,12 @@
                 $(".dvAlertRed").removeClass("col-md-6");
                 $("#btn").removeClass("col-md-6")
                 $("#btn").addClass("col-md-12");
-                
+
             }
 
         }
         function FillUCommandTemplate() {
-            
+
             var myCommandata = Ajax("Admin_GetUCommandBySchoolId", "SchoolId=" + SchoolId);
 
             BuildCombo(myCommandata, ".ddlUCommand", "UCommandId", "UCommandName");
@@ -148,16 +142,16 @@
 
         }
         function UpdateDataConnect() {
+
             
-            
-            mydata = Ajax("Admin_GetUConnectsBySchoolId", "SchoolId=" + SchoolId);
+            mydata = Ajax("Admin_GetCategoryAndConnectByCommand", "UCommandId=" + CommandSelected);
             var connectId = "";
             var UTempRigester = "";
-            
 
-             
+
+
             for (var i = 0; i < mydata.length; i++) {
-                
+
                 connectId = mydata[i].UConnectId;
                 categoryId = mydata[i].UCategoryId;
                 //get data from inputs
@@ -166,13 +160,13 @@
                 var UStartRigster = $("#startRegister_" + connectId).val();
                 var UEndRigster = $("#endRegister_" + connectId).val();
                 var UConnType = $("#connectType_" + connectId).val();
-                if (UConnType == 2) 
-                    UTempRigester = $("#tempRegister_" + connectId).val();    
+                if (UConnType == 2)
+                    UTempRigester = $("#tempRegister_" + connectId).val();
                 else
                     UTempRigester = "";
                 var UConnectSeq = $("#location_" + connectId).val();
 
-                
+
                 if (!UConnectSeq) UConnectSeq = "0";
 
                 var res = CheckValid("connectName_" + connectId, "startRegister_" + connectId, "endRegister_" + connectId, "connectType_" + connectId, "location_" + connectId, "tempRegister_" + connectId);
@@ -196,43 +190,35 @@
 
 
         }
-       
-        function selectedCombo() {
-            var UCommands = GetSelectedValueMultiSelect("#ddlUCommand");
-            $("#dvConnectContainer").html("");
-            for (i = 0; i < UCommands.length; i++) {
-                var commandId = UCommands[i];
-                var connectsByCommandData = Ajax("Admin_GetCategoryAndConnectByCommand", "UCommandId=" + commandId);
-               // connectId = connectsByCommandData[i].UConnectId;
-                for (j = 0; j < connectsByCommandData.length; j++) {     
-                    var connectsData = Ajax("Gen_GetTable", "TableName=UConnect&Condition=UConnectId=" + connectsByCommandData[j].UConnectId);
-                    var connectId = connectsData[0].UConnectId;
+        function CreateBakarRigster(Type) {
+            var SelectedUCommandId;
+            if (Type == 2) {
+                DeleteType = "4";
+                OpenMessage("האם אתה בטוח שברצונך למחוק את כל הריגסטרים של הבקר?", "כן", "לא");
 
-                   // ClearInputAlert("connectName_" + connectId, "startRegister_" + connectId, "endRegister_" + connectId, "connectType_" + connectId, "location_" + connectId, "tempRegister_" + connectId);
-                    var UserConnectsTemplate = $("#dvConnectTemplate").html();
-                    UserConnectsTemplate = UserConnectsTemplate.replace(/@Id/g, connectId);
+            } else {
 
-                    $("#dvConnectContainer").append(UserConnectsTemplate);
-                    //SchoolTemplate = SchoolTemplate.replace(/@SchoolName/g, mydata[i].Name.replace(/["']/g, "''")).replace(/@SchoolId/g, mydata[i].SchoolId);
+                var Startrigster = $("#txtStartrigster").val();
+                var Jump = $("#txtJump").val();
 
-                    UconnType = connectsData[0].UConnType;
-                    if (UconnType == 1) {
-                        $("#connectType_" + connectId).val(1);
-                        $("#tempRegister_" + connectId).prop('disabled', true);
-                    }
-                    if (UconnType == 2) {
-                        $("#connectType_" + connectId).val(2);
-                        $("#tempRegister_" + connectId).val(connectsData[0].UTempRigester);
-                    }
-                    $("#connectName_" + connectId).val(connectsData[0].UConnectName);
-                    $("#startRegister_" + connectId).val(connectsData[0].UStartRigster);
-                    $("#endRegister_" + connectId).val(connectsData[0].UEndRigster);
 
-                    $("#location_" + connectId).val(connectsData[0].UConnSeq);
+                if (!Startrigster || !Jump) {
+
+                    alert("בכדי ליצור ריגסטרים השדות הם חובה");
+                    return;
+
                 }
-                
+                var UCommands = GetSelectedValueMultiSelect("#ddlUCommand");
+                var res = Ajax("Admin_UCommandRegister", "UCommandId=" + UCommands[0] + "&Startrigster=" + Startrigster + "&Jump=" + Jump + "&Type=1");
+                //alert("יצירת כל הרגיסטרים של הבקר בוצעו בהצלחה");
+                OpenMessage("יצירת כל הרגיסטרים של הבקר בוצעו בהצלחה");
+                //  FillCategoryData();
+
+                FillData();
+
 
             }
+
         }
 
 
@@ -242,26 +228,54 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <div class="col-md-12" id="MainContainer">
         <div class="row dvSection">
-            <div class="panel panel-info">                  
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-sm-4">
+                            <%-- <div class="col-sm-4">
                               <h3 class="panel-title">&nbsp;רשימת נקודות </h3>
+                            </div>--%>
+                            <div class="col-md-2">
+                                <select id="ddlUCommand" class="ddlUCommand" onchange="FillData()" >
+                                </select>
                             </div>
-                            <div class="col-sm-4">
-                                 <select id="ddlUCommand" class="ddlUCommand" onchange="selectedCombo()" multiple="multiple">
-                                     
-                                 </select>
+                            <div class="col-md-1" style="text-align: left; margin-left: 0; padding: 0;">
+                                <button style="text-align: left;" type="button" class="btn btn-info btn-round btn-sm col-12" onclick="UpdateDataConnect()">
+                                    <i class="glyphicon glyphicon-edit"></i>&nbsp; <span>עדכן</span>
+                                </button>
                             </div>
-                            <div class="col-sm-4" style="float:left;text-align:left;margin-left:0;padding:0;">
-                                <button style="text-align:left;" type="button" class="btn btn-info btn-round btn-sm col-12" onclick="UpdateDataConnect()">
-                                  <i class="glyphicon glyphicon-edit"></i>&nbsp; <span>עדכן</span>
-                                 </button>
+
+
+                            <div class="col-md-9">
+                                   <div class="col-md-2" style="float:left">
+                                    <button type="button" class="btn btn-primary btn-round" onclick="CreateBakarRigster(1)">
+                                        <i class="glyphicon glyphicon-edit"></i><span>&nbsp;צור רגיסטרים </span>
+                                    </button>
+                                </div>
+                                <div class="col-md-2" style="float:left;">
+                                    <input type="number" id="txtJump" class="form-control" style="background:white">
+                                </div>
+                                <div class="col-md-1" style="float:left">
+                                    <span class="help-block m-b-none">בקפיצות </span>
+                                </div>
+                                   <div class="col-md-2 " style="float:left;">
+                                    <input type="number" id="txtStartrigster" class="form-control" style="background:white">
+                                </div>
+                                <div class="col-md-2" style="float:left">
+                                    <span class="help-block m-b-none">רגיסטר התחלה</span>
+                                </div>
+                             
+                                
+                                
+                             
                             </div>
-                          </div>
-                   </div>
-                </div>             
+
+                            <%--  <div class="col-md-1" style="">
+                         <div class="btn  btn-danger btn-round" onclick='CreateBakarRigster(2)'> מחק ריגסטרים</div>
+                        </div>--%>
+                        </div>
+                    </div>
+                </div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-2 dvTableHeader">
@@ -300,7 +314,7 @@
         <div class="row">
             <div class="col-md-2">
                 <div class="input-group-sm ls-group-input">
-                    <select style="font-size:medium;" id="connectType_@Id" class="form-control" onchange="ConnectChange(@Id)">
+                    <select style="font-size: medium;" id="connectType_@Id" class="form-control" onchange="ConnectChange(@Id)">
                         <option value="1">מתח</option>
                         <option value="2">מתח + טמפרטורה</option>
                         <%--  <option value="3">טמפרטורה</option>
@@ -311,36 +325,36 @@
             </div>
             <div class="col-md-2">
                 <div class="input-group-sm ls-group-input">
-                    <input style="font-size:medium;" type="text" id="connectName_@Id" placeholder="שם נקודה" class="form-control">
+                    <input style="font-size: medium;" type="text" id="connectName_@Id" placeholder="שם נקודה" class="form-control">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="input-group-sm ls-group-input">
-                    <input style="font-size:medium;" type="number" id="startRegister_@Id" placeholder="התחלת רגיסטר" class="form-control">
+                    <input style="font-size: medium;" type="number" id="startRegister_@Id" placeholder="התחלת רגיסטר" class="form-control">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="input-group-sm ls-group-input">
-                    <input style="font-size:medium;" type="number" id="endRegister_@Id" placeholder="סוף רגיסטר" class="form-control">
+                    <input style="font-size: medium;" type="number" id="endRegister_@Id" placeholder="סוף רגיסטר" class="form-control">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="input-group-sm ls-group-input">
-                    <input style="font-size:medium;" type="number" id="tempRegister_@Id" placeholder="טמפרטורת רגיסטר" class="form-control">
+                    <input style="font-size: medium;" type="number" id="tempRegister_@Id" placeholder="טמפרטורת רגיסטר" class="form-control">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="input-group-sm ls-group-input">
-                    <input style="font-size:medium;" type="text" id="location_@Id" placeholder="מיקום" class="form-control">
+                    <input style="font-size: medium;" type="text" id="location_@Id" placeholder="מיקום" class="form-control">
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row" style="margin:0;">   
+    <div class="row" style="margin: 0;">
         <div id="alertRed" class="dvAlertRed ">
             השדות המסומנים הינם שדות חובה!
-        </div>     
+        </div>
 
     </div>
 

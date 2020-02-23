@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Ofek", ".", "{53C5BAC8-2EA9-41DD-A468-EE7AFCACE2F9}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		ProjectReferences = "{6671362e-63d9-4818-961a-21d8d05b495e}|FatekConnectionInVB.dll;{3773bd47-5df6-479b-824b-f719e6b42efd}|InterchangeableConnection.dll;{32ffcccb-4f5a-4aaa-8885-2a430ae17420}|SendAndReadDataFromFatek.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_59438"
 		Debug.AspNetCompiler.PhysicalPath = "..\Ofek\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59438\"
@@ -24,13 +25,43 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Ofek", ".", "{53C5BAC8-2EA9
 		SlnRelativePath = "..\Ofek\"
 	EndProjectSection
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FatekConnectionInVB", "..\FatekConnectionInVB\FatekConnectionInVB.vbproj", "{6671362E-63D9-4818-961A-21D8D05B495E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterchangeableConnection", "..\InterchangeableConnection\InterchangeableConnection.csproj", "{3773BD47-5DF6-479B-824B-F719E6B42EFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendAndReadDataFromFatek", "..\SendAndReadDataFromFatek\SendAndReadDataFromFatek.csproj", "{32FFCCCB-4F5A-4AAA-8885-2A430AE17420}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DebugNoFatek|Any CPU = DebugNoFatek|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{53C5BAC8-2EA9-41DD-A468-EE7AFCACE2F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53C5BAC8-2EA9-41DD-A468-EE7AFCACE2F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53C5BAC8-2EA9-41DD-A468-EE7AFCACE2F9}.DebugNoFatek|Any CPU.ActiveCfg = Debug|Any CPU
+		{53C5BAC8-2EA9-41DD-A468-EE7AFCACE2F9}.DebugNoFatek|Any CPU.Build.0 = Debug|Any CPU
+		{53C5BAC8-2EA9-41DD-A468-EE7AFCACE2F9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{53C5BAC8-2EA9-41DD-A468-EE7AFCACE2F9}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{6671362E-63D9-4818-961A-21D8D05B495E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6671362E-63D9-4818-961A-21D8D05B495E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6671362E-63D9-4818-961A-21D8D05B495E}.DebugNoFatek|Any CPU.ActiveCfg = DebugNoFatek|Any CPU
+		{6671362E-63D9-4818-961A-21D8D05B495E}.DebugNoFatek|Any CPU.Build.0 = DebugNoFatek|Any CPU
+		{6671362E-63D9-4818-961A-21D8D05B495E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6671362E-63D9-4818-961A-21D8D05B495E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3773BD47-5DF6-479B-824B-F719E6B42EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3773BD47-5DF6-479B-824B-F719E6B42EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3773BD47-5DF6-479B-824B-F719E6B42EFD}.DebugNoFatek|Any CPU.ActiveCfg = Debug|Any CPU
+		{3773BD47-5DF6-479B-824B-F719E6B42EFD}.DebugNoFatek|Any CPU.Build.0 = Debug|Any CPU
+		{3773BD47-5DF6-479B-824B-F719E6B42EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3773BD47-5DF6-479B-824B-F719E6B42EFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32FFCCCB-4F5A-4AAA-8885-2A430AE17420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32FFCCCB-4F5A-4AAA-8885-2A430AE17420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32FFCCCB-4F5A-4AAA-8885-2A430AE17420}.DebugNoFatek|Any CPU.ActiveCfg = DebugNoFatek|Any CPU
+		{32FFCCCB-4F5A-4AAA-8885-2A430AE17420}.DebugNoFatek|Any CPU.Build.0 = DebugNoFatek|Any CPU
+		{32FFCCCB-4F5A-4AAA-8885-2A430AE17420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32FFCCCB-4F5A-4AAA-8885-2A430AE17420}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
