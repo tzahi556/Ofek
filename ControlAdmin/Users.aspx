@@ -21,7 +21,7 @@
             }
             $("#dvMainContainer").show();
             FillUCommandTemplate();
-            FillDatab();
+            FillData();
            // FillDropDownList();
            
 
@@ -119,98 +119,16 @@
         }
 
 
+
         function FillData() {
             mydata = Ajax("Admin_GetUserForSchool");
-            //var UserConnectsData = Ajax("Control_GetUserConnectDataCombo", "SchoolId=" + SchoolId);
-           var UserConnectsData = Ajax("Admin_GetUserConnectsBySchoolId", "SchoolId=" + SchoolId);
-          
-            var UserId = "";
-
-            $("#dvUserContainer").html("");
-
-            for (var i = 0; i < mydata.length; i++) {
-
-                if (mydata[i].UserId != UserId) {
-
-                    var UserTemplate = $("#dvUserTemplate").html();
-                    UserTemplate = UserTemplate.replace(/@Id/g, mydata[i].UserId);
-
-                    $("#dvUserContainer").append(UserTemplate);
-
-                    UserId = mydata[i].UserId;
-                    var Connects = [];
-                    for (j = 0; j<UserConnectsData.length;j++) {
-                        if (UserConnectsData[j].UserId == UserId)
-                             Connects.push(UserConnectsData[j].UConnectId)
-                       
-                    }
-                    $("#txtFirstName_" + UserId).val(mydata[i].FirstName);
-                    $("#txtLastName_" + UserId).val(mydata[i].LastName);
-                    $("#txtUserName_" + UserId).val(mydata[i].UserName);
-                    $("#txtPassword_" + UserId).val(mydata[i].Password);
-
-                    var RoleValue = mydata[i].RoleId;
-                    $("#RoleId_" + UserId).val(RoleValue);
-                    $("#Editable_" + UserId).prop('checked', mydata[i].Editable);
-
-                    $("#ddlUCommand_" + UserId).multiselect({
-                        enableClickableOptGroups: true,
-                        includeSelectAllOption: true,
-                        inheritClass: true,
-                        enableClickableOptGroups: true,
-                        buttonWidth: '100%',
-                    });
-
-                    $('#ddlUCommand_' + UserId).multiselect('select', Connects);
-
-                   
-
-                }
-
-                var UCommandId = mydata[i].UCommandId;
-            //    $("#ddlUCommand_" + mydata[i].UserId + " option[value=" + UCommandId + "]").attr('selected', true);
-
-
-
-            }
-
-            var UserTemplate = $("#dvUserTemplate").html();
-            UserTemplate = UserTemplate.replace(/@Id/g, "0");
-            $("#dvUserContainer").append("<hr>" + UserTemplate);
-
-            $("#dvDelete_0").remove();
-            $('#dvSave_0').css({ 'width': '80px' });
-          
-            $("#dvSave_0").html("הוסף משתמש");
-
-
-            $("#ddlUCommand_0").multiselect({
-                enableClickableOptGroups: true,
-                includeSelectAllOption: true,
-                inheritClass: true,
-                enableClickableOptGroups: true,
-                buttonWidth: '100%',
-            });
-
-
-
-
-        }
-
-        function FillDatab() {
-            mydata = Ajax("Admin_GetUserForSchool");
-            //var UserConnectsData = Ajax("Control_GetUserConnectDataCombo", "SchoolId=" + SchoolId);
-           // var UserConnectsData = Ajax("Admin_GetUserConnectsBySchoolId", "SchoolId=" + SchoolId);
 
             var UserId = "";
 
             $("#dvUserContainer").html("");
 
             for (var i = 0; i < mydata.length; i++) {
-                if (mydata[i].UserId == UserId) {
-                  
-                    $('#ddlUCommand_' + UserId).multiselect('select', mydata[i].UConnectId);
-                }
+
                
                 if (mydata[i].UserId != UserId) {
 
@@ -239,12 +157,16 @@
                         buttonWidth: '100%',
                     });
 
-                    
+
+
 
 
 
                 }
+                if (mydata[i].UserId == UserId) {
 
+                    $('#ddlUCommand_' + UserId).multiselect('select', mydata[i].UConnectId);
+                }
               //  var UCommandId = mydata[i].UCommandId;
                 //    $("#ddlUCommand_" + mydata[i].UserId + " option[value=" + UCommandId + "]").attr('selected', true);
 
@@ -274,6 +196,12 @@
 
 
         }
+        function getIndexfromData(data, value) {
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].UConnectId == value)
+                    return i;
+            }
+        }
         function SaveData(UserId) {
             var UCommands = [];
             var Data = Ajax("Control_GetUserConnectDataCombo", "SchoolId=" + SchoolId); 
@@ -296,9 +224,6 @@
                 "&LastName=" + LastName + "&RoleId=" + RoleId + "&Editable=" + Editable + "&UCommands=" + UCommands
              + "&UserName=" + UserName + "&Password=" + Password + "&UConnects=" + UConnects);
 
-            //FillUCommandTemplate();
-            //FillData();
-            //FillDropDownList();
             window.location.reload();
         }
 
@@ -316,10 +241,6 @@
             if (Type == 1) {
                 Ajax("Admin_DeleteUser", "UserId=" + DeleteUserId);
                 window.location.reload();
-                //$("#dvUserContainer").html("");
-                //FillUCommandTemplate();
-                //FillData();
-                ////FillDropDownList();
 
             }
         }
