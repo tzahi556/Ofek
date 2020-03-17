@@ -5,9 +5,93 @@
     <script type="text/javascript" src="../assets/js/jquery-ui.js"></script>
     <script src="../assets/js/bootstrap-multiselect.js"></script>
     <link href="../assets/css/bootstrap-multiselect.css" rel="stylesheet" />
-    
+    <style>
+        .dvConnect {
+            padding: 10px;
+            margin: 5px;
+            padding-bottom: 0;
+            padding-top: 3px;
+            height: 90px;
+            width: 95%;
+            padding-right: 5px;
+            
+        }
+
+        .tempTuner span {
+            font-size: 13px;
+            width: 15px;
+            height: 15px;
+        }
+        div.UCname {
+            padding:0px;
+            white-space: pre-wrap;
+            overflow:hidden;
+            font-size:14px;
+            word-break: break-all;
+        }
+        @media screen and (max-width:420px) {
+            .panel-body {
+                width: 360px;
+                padding-left: 0px;
+                padding-right: 0px;
+                height: 500px;
+            }
+
+                .panel-body div .col-xs-3 {
+                    padding-left: 0;
+                    padding-right: 0;
+                    margin-right: 0px;
+                }
+
+            .dvConnect {
+                align-items: center;
+                padding: 10px;
+                margin: 5px;
+                padding-bottom: 0px;
+                padding-top: 3px;
+                height: 65px;
+                width: 95%;
+                padding-right: 0px;
+            }
+
+            .imgStatus img {
+                width: 15px;
+            }
+
+            .dvConnect div:nth-child(3) {
+                
+                width: 40px;
+                font-size: 10px;
+                text-align: center;
+                
+                padding-right: 5px;
+            }
+
+            .tempTuner span {
+                font-size: 10px;
+                padding-right: 13px;
+                width: 15px;
+                height: 15px;
+            }
+
+            .tempTuner {
+                flex: 1;
+            }
+
+                .tempTuner i {
+                    width: 3px;
+                }
+
+            .dvConnect img {
+                width: 30px;
+                padding-right: 10px;
+            }
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script type="text/javascript">
         //<meta http-equiv="refresh" content="60" />
+
         var mydata;
         var UCommandId = "";
         var UConnectIdSelected = "";
@@ -15,7 +99,7 @@
         var StatusSelected;
         var Editable;
         $(document).ready(function () {
-
+            HideMenuRight();
             if (!SchoolId) {
 
                 OpenMessage("עליך לבחור בית ספר בכדי להמשיך ...");
@@ -232,29 +316,25 @@
                     ConnectTemplate = ConnectTemplate.replace(/@URlyConnectId/g, mydata[i].URlyConnectId);
                     ConnectTemplate = ConnectTemplate.replace(/@UtempStart/g, mydata[i].UtempStart);
                     ConnectTemplate = ConnectTemplate.replace(/@UtempEnd/g, mydata[i].UtempEnd);
-                    ConnectTemplate = ConnectTemplate.replace(/@UTemp/g, (mydata[i].UTemp) ? mydata[i].UTemp : 0);
+                    ConnectTemplate = ConnectTemplate.replace(/@UTemp/g, (mydata[i].UTemp) ? mydata[i].UTemp : 0);                   
                     ConnectTemplate = ConnectTemplate.replace(/@UConnectName/g, mydata[i].UConnectName).replace(/@UConnectId/g, mydata[i].UConnectId);
 
-                    // אם הוא נצירת שבת
-                    //if (mydata[i].UConnType == "5") {
-                    //    ConnectTemplate = ConnectTemplate.replace(/@img/g, "clock");
-                    //}
-                    //else
-                    //{
 
-
+                    if (mydata[i].Value == "-1") {
+                        $("#dvCommand_" + UCommandId).addClass("btn-danger");
+                    } else
+                        $("#dvCommand_" + UCommandId).addClass("btn-info");
+                        
                     if (mydata[i].UStatus == "2")
                         ConnectTemplate = ConnectTemplate.replace(/@img/g, (mydata[i].Value == "0") ? "Off" : ((mydata[i].Value == "1") ? "On" : "error"));
                     else
                         ConnectTemplate = ConnectTemplate.replace(/@img/g, (mydata[i].UStatus == "0") ? "Off" : "On");
 
-                    // }
-
                     $("#dvCategoryConainer_" + UCategoryId).append(ConnectTemplate);
 
                     if (mydata[i].UConnType == 1) {
-
                         $('#tempTuner_' + mydata[i].UConnectId).hide();
+                    
 
                     }
 
@@ -294,6 +374,7 @@
             
             
             FillData();
+            
             $("#dvCommand_" + UCommandId).addClass("ucommandSelected");
 
             
@@ -615,7 +696,8 @@
             OpenMessage(" האם להעתיק לוז נוכחי אל הנקודות:" + '\n' + ConnectsNames.toString() + "?", "כן", "לא");
 
         }
-        function ChangeTemp(UConnectId, Temp, Val,e) {
+        function ChangeTemp(UConnectId, Temp, Val, e) {
+          
             e.stopPropagation();
             var data = Ajax("Admin_UpdateTempByConnectId", "UConnectId=" + UConnectId + "&val=" + Val);           
             Temp =  data[0].UTemp;
@@ -893,9 +975,11 @@
                     <h3 class="panel-title">&nbsp; @CategoryName
                     </h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body ">
 
-                    <div class="col-md-12" id="dvCategoryConainer_@UCategoryId">
+                    <div class="col-md-12  " id="dvCategoryConainer_@UCategoryId">
+                            
+                        
                     </div>
 
 
@@ -908,31 +992,34 @@
 
     </div>
 
-    <div id="dvConnectTemplate" style="display: none">
-        <div class="col-md-2">
-            <div style="height:60px;" class="btn btn-default btn-round dvConnect draggable droppable dvConnectPanel" id="dvConnect_@UConnectId" onclick="OpenConnect(@UConnectId,'@UConnectName','@URlyConnectId','@UtempStart','@UtempEnd',@LoozOrTemp,@UConnType2,@Ustatus,event)">
-                <img id="img_@UConnectId" src="../assets/images/@img.png" />
+    <div class="row" style="margin:10px;display:none;" id="dvConnectTemplate">
+        <div style="padding-left:0;padding-right:0;" class="col-md-1 col-xs-2" >
+
+            <div  class="btn btn-default btn-round  dvConnect draggable droppable dvConnectPanel" id="dvConnect_@UConnectId" onclick="OpenConnect(@UConnectId,'@UConnectName','@URlyConnectId','@UtempStart','@UtempEnd',@LoozOrTemp,@UConnType2,@Ustatus,event)">
+                <img   id="img_@UConnectId" src="../assets/images/@img.png" />
                 
-                <span style="align-items:center;" id="tempTuner_@UConnectId">                 
+                <div class="tempTuner" style="align-items:center;"  id="tempTuner_@UConnectId">                 
                     
                    
-                    <i style="padding:0;" class='btn btn-dark btn-round glyphicon glyphicon-plus-sign' onclick="ChangeTemp(@UConnectId,@UTemp,1,event)">
+                    <i style="padding:0" class='btn btn-dark btn-round glyphicon glyphicon-plus-sign' onclick="ChangeTemp(@UConnectId,@UTemp,1,event)">
 
                     </i>
-                    <span id="temp_@UConnectId">@UTemp</span>
-                    <i  style="padding:0;" class='btn btn-dark btn-round glyphicon glyphicon-minus-sign' onclick="ChangeTemp(@UConnectId,@UTemp,-1,event)"></i>
-                 </span>                                    
-                <br />
-                <span>@UConnectName</span>
+                    <span style="text-align:center" id="temp_@UConnectId">@UTemp</span>
+                    <i  style="padding:0;padding-left:3px;" class='btn btn-dark btn-round glyphicon glyphicon-minus-sign' onclick="ChangeTemp(@UConnectId,@UTemp,-1,event)"></i>
+                 </div>                                  
+                 
+                <div class="UCname">@UConnectName</div>
+                
             </div>
-            <div style="text-align: center" id="dvStatic_@UConnectId">
+
+            <div class="imgStatus" style="text-align: center" id="dvStatic_@UConnectId">
                 <img id="@UConnectId_2" src="../assets/images/lightNormalIcon.png" onclick="OpenShortAction(2,@UConnectId)" />
                 <img id="@UConnectId_1" src="../assets/images/lightOnConstant.png" onclick="OpenShortAction(1,@UConnectId)" />
                 <img id="@UConnectId_0" src="../assets/images/lightOffConstant.png" onclick="OpenShortAction(0,@UConnectId)" />
             </div>
-
+            <br />
         </div>
-
+        
     </div>
 
     <div id="dvTimeTemplate" style="display: none">

@@ -10588,7 +10588,7 @@ font-size :18px;
         }
 
         .ucommandSelected{
-            text-decoration:overline;
+            text-decoration:underline;
             font-weight:bolder;
             font-style:italic;
            

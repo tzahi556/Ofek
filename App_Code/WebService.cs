@@ -165,32 +165,41 @@ public class WebService : System.Web.Services.WebService
         string UserId = GetParams("UserId");
         string UCommandId = GetParams("UCommandId");// to do update by command
         DataTable dtRegisters = Dal.ExeSp("Control_GetUserConnectData", UserId, UCommandId);
-
-      //  DataTable dtRegisters = ds.Tables[0];// טבלה ראשונה לפי רגיסטרים
         DataTable dt = new DataTable();
-
-
-        if (dtRegisters.Rows.Count > 0)
+        try
         {
-            string IP = dtRegisters.Rows[0]["UCommIP"].ToString();
-            OfekWebManager ow = new OfekWebManager(IP);
-            bool[] statusArray = ow.GetAllStatuses(dtRegisters.Rows.Count);
-
-            for (int i = 0; i < dtRegisters.Rows.Count; i++)
+            if (dtRegisters.Rows.Count > 0)
             {
-                dtRegisters.Rows[i]["Value"] = (statusArray[i]) ? "1" : "0";
+                string IP = dtRegisters.Rows[0]["UCommIP"].ToString();
+                OfekWebManager ow = new OfekWebManager(IP);
+                bool[] statusArray = ow.GetAllStatuses(dtRegisters.Rows.Count);
+
+                for (int i = 0; i < dtRegisters.Rows.Count; i++)
+                {
+                    dtRegisters.Rows[i]["Value"] = (statusArray[i]) ? "1" : "0";
+                }
+
             }
 
+           
+        }
+        catch
+        {
+            for (int i = 0; i < dtRegisters.Rows.Count; i++)
+            {
+                dtRegisters.Rows[i]["Value"] = "-1";
+            }
+        }
+        finally
+        {
             DataView dv = dtRegisters.DefaultView;
             dv.Sort = "Seq, UConnSeq";
             dt = dv.ToTable();
 
+            HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
+
 
         }
-
-      
-
-        HttpContext.Current.Response.Write(ConvertDataTabletoString(dt));
     }
 
     [WebMethod]
